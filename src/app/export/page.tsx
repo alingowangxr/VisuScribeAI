@@ -49,10 +49,7 @@ function ExportContent() {
     )
   }
 
-  const markdownContent = generateMarkdown(plan, article).replace(
-    '# cc2image',
-    '# VisuScribe AI'
-  )
+  const markdownContent = generateMarkdown(plan, article)
   const jsonContent = generateJson(plan)
 
   const handleCopy = (content: string) => {
@@ -122,7 +119,7 @@ function ExportContent() {
                       <Button
                         size="sm"
                         onClick={() =>
-                          handleDownload(markdownContent, 'cc2image-plan.md')
+                          handleDownload(markdownContent, 'visuscribe-plan.md')
                         }
                       >
                         <Download className="h-4 w-4 mr-2" />
@@ -147,7 +144,7 @@ function ExportContent() {
                       <Button
                         size="sm"
                         onClick={() =>
-                          handleDownload(jsonContent, 'cc2image-plan.json')
+                          handleDownload(jsonContent, 'visuscribe-plan.json')
                         }
                       >
                         <Download className="h-4 w-4 mr-2" />

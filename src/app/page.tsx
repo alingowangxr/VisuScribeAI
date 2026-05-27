@@ -15,9 +15,9 @@ export default function HomePage() {
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">C</span>
+              <span className="text-primary-foreground font-bold">V</span>
             </div>
-            <span className="text-xl font-bold tracking-tight">cc2image</span>
+            <span className="text-xl font-bold tracking-tight">VisuScribe AI</span>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             <Link

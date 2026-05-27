@@ -11,7 +11,7 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
-const languageChangeEvent = 'cc2image-language-change'
+const languageChangeEvent = 'visuscribe-language-change'
 
 function isLanguage(value: string | null): value is Language {
   return value === 'zh' || value === 'en'
@@ -20,7 +20,7 @@ function isLanguage(value: string | null): value is Language {
 function getLanguageSnapshot(): Language {
   if (typeof window === 'undefined') return 'zh'
 
-  const saved = localStorage.getItem('cc2image_lang')
+  const saved = localStorage.getItem('visuscribe_lang')
   return isLanguage(saved) ? saved : 'zh'
 }
 
@@ -42,7 +42,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   )
 
   const handleSetLang = (newLang: Language) => {
-    localStorage.setItem('cc2image_lang', newLang)
+    localStorage.setItem('visuscribe_lang', newLang)
     window.dispatchEvent(new Event(languageChangeEvent))
   }
 
