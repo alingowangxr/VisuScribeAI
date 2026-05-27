@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ImagePlan } from '@/lib/types'
+import { stripLargeGeneratedImages } from '@/lib/plan-serialization'
 
 export function useProject(
   article: string,
@@ -39,7 +40,10 @@ export function useProject(
     if (article) params.set('article', encodeURIComponent(article))
     if (styleId) params.set('style', styleId)
     if (bodyCount) params.set('count', bodyCount.toString())
-    if (plan) params.set('plan_json', encodeURIComponent(JSON.stringify(plan)))
+    const shareablePlan = stripLargeGeneratedImages(plan)
+    if (shareablePlan) {
+      params.set('plan_json', encodeURIComponent(JSON.stringify(shareablePlan)))
+    }
 
     const queryString = params.toString()
     if (queryString) {

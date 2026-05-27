@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, Suspense, useEffect } from 'react'
+import React, { useState, Suspense, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { ArticleEditor } from '@/components/editor/article-editor'
 import { StyleSelector } from '@/components/editor/style-selector'
@@ -30,6 +30,7 @@ import { useGenerate } from '@/hooks/use-generate'
 import { useProject } from '@/hooks/use-project'
 import { usePersistence } from '@/hooks/use-persistence'
 import { renderCover, renderBody } from '@/lib/renderer'
+import { stripLargeGeneratedImages } from '@/lib/plan-serialization'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { LanguageToggle } from '@/components/language-toggle'
 import { useI18n } from '@/components/i18n-provider'
@@ -65,6 +66,7 @@ function EditorContent() {
     loading: breakdownLoading,
   } = useBreakdown()
   const { generate: generateImage, loading: imageLoading } = useGenerate()
+  const persistedPlan = useMemo(() => stripLargeGeneratedImages(plan), [plan])
 
   useProject(
     article,
@@ -79,7 +81,7 @@ function EditorContent() {
 
   const { restore: restoreDraft, setInitialized } = usePersistence(
     'current_project',
-    { article, styleId, bodyCount, plan, provider },
+    { article, styleId, bodyCount, plan: persistedPlan, provider },
     (saved) => {
       if (saved.article) setArticle(saved.article)
       if (saved.styleId) setStyleId(saved.styleId)
@@ -311,7 +313,9 @@ function EditorContent() {
             <Link
               href={`/export?${new URLSearchParams({
                 article: encodeURIComponent(article),
-                plan_json: encodeURIComponent(JSON.stringify(plan || {})),
+                plan_json: encodeURIComponent(
+                  JSON.stringify(stripLargeGeneratedImages(plan) || {})
+                ),
               }).toString()}`}
               className={buttonVariants({ variant: 'outline', size: 'sm' })}
             >
