@@ -12,8 +12,10 @@ export async function POST(req: Request) {
     const imageUrl = await imageProvider.generate({ prompt, aspectRatio })
 
     return Response.json({ url: imageUrl })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Generate API Error:', error)
-    return new Response(error.message || 'Internal Server Error', { status: 500 })
+    const message =
+      error instanceof Error ? error.message : 'Internal Server Error'
+    return new Response(message, { status: 500 })
   }
 }

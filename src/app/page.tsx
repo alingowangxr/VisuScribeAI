@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { StyleCard } from '@/components/style-card'
 import { STYLES } from '@/lib/styles'
-import { Sparkles, ArrowRight, Github } from 'lucide-react'
+import { Sparkles, ArrowRight, GitBranch } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 export default function HomePage() {
@@ -20,20 +20,26 @@ export default function HomePage() {
             <span className="text-xl font-bold tracking-tight">cc2image</span>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/editor" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/editor"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               編輯器
             </Link>
-            <Link href="/gallery" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/gallery"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               作品廊
             </Link>
             <ThemeToggle />
-            <a 
-              href="https://github.com" 
-              target="_blank" 
+            <a
+              href="https://github.com"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Github className="h-5 w-5" />
+              <GitBranch className="h-5 w-5" />
             </a>
           </nav>
         </div>
@@ -48,7 +54,8 @@ export default function HomePage() {
               AI 驅動的文章視覺化工具
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-              讓你的文章<br />
+              讓你的文章
+              <br />
               <span className="text-primary">「一眼被看懂」</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -74,9 +81,11 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4">內置 34 套專業風格</h2>
-              <p className="text-muted-foreground">從手繪知識圖解到典籍山水，滿足各種內容場景</p>
+              <p className="text-muted-foreground">
+                從手繪知識圖解到典籍山水，滿足各種內容場景
+              </p>
             </div>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {STYLES.map((style) => (
                 <StyleCard key={style.style_id} id={style.style_id} />
@@ -119,15 +128,32 @@ export default function HomePage() {
             <div className="w-6 h-6 bg-foreground rounded flex items-center justify-center">
               <span className="text-background text-[10px] font-bold">V</span>
             </div>
-            <span className="text-sm font-bold tracking-tight">VisuScribe AI</span>
+            <span className="text-sm font-bold tracking-tight">
+              VisuScribe AI
+            </span>
           </div>
           <p className="text-sm text-muted-foreground">
             © 2026 VisuScribe AI Project. 基於 AI 驅動的內容視覺化實驗室。
           </p>
           <div className="flex items-center justify-center space-x-6 text-sm">
-            <Link href="/terms" className="text-muted-foreground hover:text-foreground">使用條款</Link>
-            <Link href="/privacy" className="text-muted-foreground hover:text-foreground">隱私政策</Link>
-            <a href="https://github.com" className="text-muted-foreground hover:text-foreground">GitHub</a>
+            <Link
+              href="/terms"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              使用條款
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              隱私政策
+            </Link>
+            <a
+              href="https://github.com"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              GitHub
+            </a>
           </div>
         </div>
       </footer>

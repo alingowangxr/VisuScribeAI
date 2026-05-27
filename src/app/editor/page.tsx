@@ -11,13 +11,20 @@ import { GlobalVisualConfig } from '@/components/editor/global-visual-config'
 import { CoverCard } from '@/components/editor/cover-card'
 import { BodyCard } from '@/components/editor/body-card'
 import { PromptPreview } from '@/components/editor/prompt-preview'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Progress } from '@/components/ui/progress'
 import { CoverSpec, BodySpec, ImagePlan } from '@/lib/types'
 import { STYLE_ANCHORS } from '@/lib/styles'
-import { Plus, Sparkles, Send, Loader2, Save, ArrowRightLeft } from 'lucide-react'
+import {
+  Plus,
+  Sparkles,
+  Send,
+  Loader2,
+  Save,
+  ArrowRightLeft,
+} from 'lucide-react'
 import { useBreakdown } from '@/hooks/use-breakdown'
 import { useGenerate } from '@/hooks/use-generate'
 import { useProject } from '@/hooks/use-project'
@@ -34,36 +41,58 @@ function EditorContent() {
   const [styleId, setStyleId] = useState('handdrawn_knowledge_card')
   const [provider, setProvider] = useState('dalle')
   const [bodyCount, setBodyCount] = useState(3)
-  const [globalAnchor, setGlobalAnchor] = useState(STYLE_ANCHORS['handdrawn_knowledge_card'])
-  
-  const [plan, setPlan] = useState<ImagePlan | null>(null)
-  const [regeneratingIndex, setRegeneratingIndex] = useState<number | 'cover' | null>(null)
-  const [generatingImageIndex, setGeneratingImageIndex] = useState<number | 'cover' | null>(null)
-  
-  const [batchProgress, setBatchProgress] = useState<{ current: number, total: number } | null>(null)
-  const [isCompareOpen, setIsCompareOpen] = useState(false)
-
-  const { breakdown, regenerateImage, loading: breakdownLoading } = useBreakdown()
-  const { generate: generateImage, loading: imageLoading } = useGenerate()
-  
-  useProject(
-    article, setArticle,
-    styleId, setStyleId,
-    bodyCount, setBodyCount,
-    plan, setPlan
+  const [globalAnchor, setGlobalAnchor] = useState(
+    STYLE_ANCHORS['handdrawn_knowledge_card']
   )
 
-  const { restore: restoreDraft, setInitialized } = usePersistence('current_project', { article, styleId, bodyCount, plan, provider }, (saved) => {
-    if (saved.article) setArticle(saved.article)
-    if (saved.styleId) setStyleId(saved.styleId)
-    if (saved.bodyCount) setBodyCount(saved.bodyCount)
-    if (saved.plan) setPlan(saved.plan)
-    if (saved.provider) setProvider(saved.provider)
-  })
+  const [plan, setPlan] = useState<ImagePlan | null>(null)
+  const [regeneratingIndex, setRegeneratingIndex] = useState<
+    number | 'cover' | null
+  >(null)
+  const [generatingImageIndex, setGeneratingImageIndex] = useState<
+    number | 'cover' | null
+  >(null)
+
+  const [batchProgress, setBatchProgress] = useState<{
+    current: number
+    total: number
+  } | null>(null)
+  const [isCompareOpen, setIsCompareOpen] = useState(false)
+
+  const {
+    breakdown,
+    regenerateImage,
+    loading: breakdownLoading,
+  } = useBreakdown()
+  const { generate: generateImage, loading: imageLoading } = useGenerate()
+
+  useProject(
+    article,
+    setArticle,
+    styleId,
+    setStyleId,
+    bodyCount,
+    setBodyCount,
+    plan,
+    setPlan
+  )
+
+  const { restore: restoreDraft, setInitialized } = usePersistence(
+    'current_project',
+    { article, styleId, bodyCount, plan, provider },
+    (saved) => {
+      if (saved.article) setArticle(saved.article)
+      if (saved.styleId) setStyleId(saved.styleId)
+      if (saved.bodyCount) setBodyCount(saved.bodyCount)
+      if (saved.plan) setPlan(saved.plan)
+      if (saved.provider) setProvider(saved.provider)
+    }
+  )
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
-    const hasParams = searchParams.has('article') || searchParams.has('plan_json')
+    const hasParams =
+      searchParams.has('article') || searchParams.has('plan_json')
     if (!hasParams) {
       const restored = restoreDraft()
       if (restored) toast.info('已從本地存檔恢復草稿')
@@ -94,16 +123,30 @@ function EditorContent() {
   const handleRegenerate = async (type: 'cover' | 'body', index?: number) => {
     if (!article.trim() || !plan) return
     setRegeneratingIndex(type === 'cover' ? 'cover' : index!)
-    const currentSpec = type === 'cover' ? plan.cover : plan.bodies[index!]
-    const newSpec = await regenerateImage(article, type, currentSpec, styleId)
-    if (newSpec) {
-      if (type === 'cover') {
-        setPlan({ ...plan, cover: newSpec })
+
+    if (type === 'cover') {
+      const newSpec = await regenerateImage(
+        article,
+        'cover',
+        plan.cover,
+        styleId
+      )
+      if (newSpec) {
+        setPlan({ ...plan, cover: newSpec as CoverSpec })
+        toast.success('AI 已更新該卡片規劃')
       } else {
-        const newBodies = [...plan.bodies]
-        newBodies[index!] = newSpec
-        setPlan({ ...plan, bodies: newBodies })
+        toast.error('重新生成規劃失敗')
       }
+      setRegeneratingIndex(null)
+      return
+    }
+
+    const currentSpec = plan.bodies[index!]
+    const newSpec = await regenerateImage(article, 'body', currentSpec, styleId)
+    if (newSpec) {
+      const newBodies = [...plan.bodies]
+      newBodies[index!] = newSpec as BodySpec
+      setPlan({ ...plan, bodies: newBodies })
       toast.success('AI 已更新該卡片規劃')
     } else {
       toast.error('重新生成規劃失敗')
@@ -111,10 +154,13 @@ function EditorContent() {
     setRegeneratingIndex(null)
   }
 
-  const handleGenerateImage = async (type: 'cover' | 'body', index?: number) => {
+  const handleGenerateImage = async (
+    type: 'cover' | 'body',
+    index?: number
+  ) => {
     if (!plan) return
     const spec = type === 'cover' ? plan.cover : plan.bodies[index!]
-    
+
     if (type === 'cover') {
       const s = spec as CoverSpec
       if (!s.title.trim() || !s.metaphor.trim() || !s.elements.trim()) {
@@ -130,28 +176,39 @@ function EditorContent() {
     }
 
     setGeneratingImageIndex(type === 'cover' ? 'cover' : index!)
-    const prompt = type === 'cover' ? renderCover(spec as CoverSpec) : renderBody(spec as BodySpec)
-    const ratio = type === 'cover' ? '21:9' : '16:9'
-    
-    const url = await generateImage(prompt, ratio, provider)
-    
-    if (url) {
-      if (type === 'cover') {
-        setPlan((prev) => prev ? ({ ...prev, cover: { ...prev.cover, generatedUrl: url } }) : null)
-      } else {
-        setPlan((prev) => {
-          if (!prev) return null
-          const newBodies = [...prev.bodies]
-          newBodies[index!] = { ...newBodies[index!], generatedUrl: url }
-          return { ...prev, bodies: newBodies }
-        })
+
+    try {
+      const prompt =
+        type === 'cover'
+          ? renderCover(spec as CoverSpec)
+          : renderBody(spec as BodySpec)
+      const ratio = type === 'cover' ? '21:9' : '16:9'
+
+      const url = await generateImage(prompt, ratio, provider)
+
+      if (url) {
+        if (type === 'cover') {
+          setPlan((prev) =>
+            prev
+              ? { ...prev, cover: { ...prev.cover, generatedUrl: url } }
+              : null
+          )
+        } else {
+          setPlan((prev) => {
+            if (!prev) return null
+            const newBodies = [...prev.bodies]
+            newBodies[index!] = { ...newBodies[index!], generatedUrl: url }
+            return { ...prev, bodies: newBodies }
+          })
+        }
+        return url
       }
-      return url
-    } else {
+
       toast.error('生圖失敗')
       return null
+    } finally {
+      setGeneratingImageIndex(null)
     }
-    setGeneratingImageIndex(null)
   }
 
   const handleGenerateAll = async () => {
@@ -229,7 +286,9 @@ function EditorContent() {
               <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
                 <span className="text-primary-foreground font-bold">V</span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight">VisuScribe AI {t('editor')}</h1>
+              <h1 className="text-xl font-bold tracking-tight">
+                VisuScribe AI {t('editor')}
+              </h1>
             </Link>
           </div>
           <div className="flex items-center space-x-4">
@@ -237,28 +296,45 @@ function EditorContent() {
             <LanguageToggle />
             <ThemeToggle />
             {plan && (
-              <Button variant="ghost" size="sm" onClick={() => setIsCompareOpen(true)} className="gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsCompareOpen(true)}
+                className="gap-2"
+              >
                 <ArrowRightLeft className="h-4 w-4" />
                 <span className="hidden sm:inline">{t('compareMode')}</span>
               </Button>
             )}
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/export?${new URLSearchParams({
+            <Link
+              href={`/export?${new URLSearchParams({
                 article: encodeURIComponent(article),
-                plan_json: encodeURIComponent(JSON.stringify(plan || {}))
-              }).toString()}`}>
-                {t('export')}
-              </Link>
-            </Button>
-            <Button size="sm" onClick={handleGenerateAll} disabled={!plan || breakdownLoading || imageLoading}>
-              {imageLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                plan_json: encodeURIComponent(JSON.stringify(plan || {})),
+              }).toString()}`}
+              className={buttonVariants({ variant: 'outline', size: 'sm' })}
+            >
+              {t('export')}
+            </Link>
+            <Button
+              size="sm"
+              onClick={handleGenerateAll}
+              disabled={!plan || breakdownLoading || imageLoading}
+            >
+              {imageLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
               {t('generateAll')}
             </Button>
           </div>
         </div>
         {batchProgress && (
           <div className="absolute bottom-0 left-0 w-full h-1 bg-muted">
-            <Progress value={(batchProgress.current / batchProgress.total) * 100} className="h-full rounded-none" />
+            <Progress
+              value={(batchProgress.current / batchProgress.total) * 100}
+              className="h-full rounded-none"
+            />
           </div>
         )}
       </header>
@@ -270,20 +346,22 @@ function EditorContent() {
             <ArticleEditor value={article} onChange={setArticle} />
           </div>
           <Separator />
-          <StyleSelector 
-            selectedId={styleId} 
+          <StyleSelector
+            selectedId={styleId}
             onSelect={(id) => {
               setStyleId(id)
-              setGlobalAnchor(STYLE_ANCHORS[id] || STYLE_ANCHORS['handdrawn_knowledge_card'])
-            }} 
+              setGlobalAnchor(
+                STYLE_ANCHORS[id] || STYLE_ANCHORS['handdrawn_knowledge_card']
+              )
+            }}
           />
           <Separator />
           <ImageCountConfig count={bodyCount} onChange={setBodyCount} />
           <Separator />
           <GlobalVisualConfig value={globalAnchor} onChange={setGlobalAnchor} />
-          
-          <Button 
-            className="w-full py-6 text-lg font-bold" 
+
+          <Button
+            className="w-full py-6 text-lg font-bold"
             onClick={handleStartBreakdown}
             disabled={breakdownLoading || !article.trim()}
           >
@@ -324,13 +402,24 @@ function EditorContent() {
               <Sparkles className="w-12 h-12 mb-4 opacity-20" />
               <p className="text-lg">輸入文章並點擊「{t('aiBreakdown')}」</p>
               <p className="text-sm">或者手動新增圖片卡片開始編輯</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="mt-6"
-                onClick={() => setPlan({
-                  cover: { title: '', subtitle: '', metaphor: '', elements: '', character_action: '', speech_bubble: '', bottomSentence: '', style_id: styleId },
-                  bodies: []
-                })}
+                onClick={() =>
+                  setPlan({
+                    cover: {
+                      title: '',
+                      subtitle: '',
+                      metaphor: '',
+                      elements: '',
+                      character_action: '',
+                      speech_bubble: '',
+                      bottomSentence: '',
+                      style_id: styleId,
+                    },
+                    bodies: [],
+                  })
+                }
               >
                 手動開始
               </Button>
@@ -338,9 +427,9 @@ function EditorContent() {
           ) : (
             <div className="space-y-6">
               <section className="space-y-4">
-                <CoverCard 
-                  spec={plan.cover} 
-                  onChange={updateCover} 
+                <CoverCard
+                  spec={plan.cover}
+                  onChange={updateCover}
                   onRegenerate={() => handleRegenerate('cover')}
                   isRegenerating={regeneratingIndex === 'cover'}
                   onGenerateImage={() => handleGenerateImage('cover')}
@@ -365,7 +454,11 @@ function EditorContent() {
                     onChange={(newBody) => updateBody(i, newBody)}
                     onDelete={() => deleteBody(i)}
                     onMoveUp={i > 0 ? () => moveBody(i, 'up') : undefined}
-                    onMoveDown={i < plan.bodies.length - 1 ? () => moveBody(i, 'down') : undefined}
+                    onMoveDown={
+                      i < plan.bodies.length - 1
+                        ? () => moveBody(i, 'down')
+                        : undefined
+                    }
                     onRegenerate={() => handleRegenerate('body', i)}
                     isRegenerating={regeneratingIndex === i}
                     onGenerateImage={() => handleGenerateImage('body', i)}
@@ -381,7 +474,9 @@ function EditorContent() {
                 onClick={addBody}
               >
                 <Plus className="h-6 w-6 text-muted-foreground" />
-                <span className="text-sm font-medium text-muted-foreground">新增正文配圖</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  新增正文配圖
+                </span>
               </Button>
             </div>
           )}

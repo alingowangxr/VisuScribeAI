@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useSyncExternalStore } from 'react'
 import { Language, translations } from '@/lib/i18n'
 
 interface I18nContextType {
@@ -11,19 +11,39 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Language>('zh')
+const languageChangeEvent = 'cc2image-language-change'
 
-  useEffect(() => {
-    const saved = localStorage.getItem('cc2image_lang') as Language
-    if (saved && (saved === 'zh' || saved === 'en')) {
-      setLang(saved)
-    }
-  }, [])
+function isLanguage(value: string | null): value is Language {
+  return value === 'zh' || value === 'en'
+}
+
+function getLanguageSnapshot(): Language {
+  if (typeof window === 'undefined') return 'zh'
+
+  const saved = localStorage.getItem('cc2image_lang')
+  return isLanguage(saved) ? saved : 'zh'
+}
+
+function subscribeLanguageChange(callback: () => void) {
+  window.addEventListener('storage', callback)
+  window.addEventListener(languageChangeEvent, callback)
+
+  return () => {
+    window.removeEventListener('storage', callback)
+    window.removeEventListener(languageChangeEvent, callback)
+  }
+}
+
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const lang = useSyncExternalStore<Language>(
+    subscribeLanguageChange,
+    getLanguageSnapshot,
+    () => 'zh' as const
+  )
 
   const handleSetLang = (newLang: Language) => {
-    setLang(newLang)
     localStorage.setItem('cc2image_lang', newLang)
+    window.dispatchEvent(new Event(languageChangeEvent))
   }
 
   const t = (key: keyof typeof translations.zh) => {

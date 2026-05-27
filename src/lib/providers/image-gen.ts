@@ -1,6 +1,3 @@
-import { openai } from '@ai-sdk/openai'
-import { generateImage } from 'ai'
-
 export interface ImageGenOptions {
   prompt: string
   aspectRatio: '21:9' | '16:9'
@@ -15,28 +12,36 @@ export class DalleProvider implements ImageGenProvider {
     // Note: Vercel AI SDK generateImage currently returns a URL or base64
     // DALL-E 3 supports '1024x1024' or '1792x1024' (wide) or '1024x1792' (tall)
     // We'll map our ratios to DALL-E 3 sizes
-    const size = aspectRatio === '21:9' || aspectRatio === '16:9' ? '1792x1024' : '1024x1024'
-    
+    const size =
+      aspectRatio === '21:9' || aspectRatio === '16:9'
+        ? '1792x1024'
+        : '1024x1024'
+
     // Using native OpenAI fetch if generateImage is not yet fully available/stable in current SDK version for images
     // Or just use the experimental generateImage
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'dall-e-3',
-        prompt: prompt,
-        n: 1,
-        size: size,
-        quality: 'hd',
-      }),
-    })
+    const response = await fetch(
+      'https://api.openai.com/v1/images/generations',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'dall-e-3',
+          prompt: prompt,
+          n: 1,
+          size: size,
+          quality: 'hd',
+        }),
+      }
+    )
 
     if (!response.ok) {
       const error = await response.json()
-      throw new Error(error.error?.message || 'Failed to generate image with DALL-E')
+      throw new Error(
+        error.error?.message || 'Failed to generate image with DALL-E'
+      )
     }
 
     const data = await response.json()

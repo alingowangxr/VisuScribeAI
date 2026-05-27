@@ -1,13 +1,13 @@
-import { ImagePlan, CoverSpec, BodySpec } from './types'
+import { ImagePlan } from './types'
 import { renderCover, renderBody } from './renderer'
 
 export function generateMarkdown(plan: ImagePlan, article: string): string {
   let md = `# VisuScribe AI 視覺化規劃方案\n\n`
-  
+
   md += `## 文章摘要\n${article.substring(0, 200)}${article.length > 200 ? '...' : ''}\n\n`
-  
+
   md += `--- \n\n`
-  
+
   // Cover
   md += `### 圖 1｜封面圖\n`
   md += `- **主題**：${plan.cover.title}\n`
@@ -21,9 +21,9 @@ export function generateMarkdown(plan: ImagePlan, article: string): string {
   if (plan.cover.generatedUrl) {
     md += `\n**已生成圖片**：[點擊查看](${plan.cover.generatedUrl})\n`
   }
-  
+
   md += `\n---\n\n`
-  
+
   // Bodies
   plan.bodies.forEach((body, i) => {
     md += `### 圖 ${i + 2}｜正文配圖\n`
@@ -54,17 +54,17 @@ export function generateJson(plan: ImagePlan): string {
         type: 'cover',
         aspect_ratio: '21:9',
         ...plan.cover,
-        prompt: renderCover(plan.cover)
+        prompt: renderCover(plan.cover),
       },
       ...plan.bodies.map((body, i) => ({
         id: `body_${(i + 1).toString().padStart(2, '0')}`,
         type: 'body',
         aspect_ratio: '16:9',
         ...body,
-        prompt: renderBody(body)
-      }))
-    ]
+        prompt: renderBody(body),
+      })),
+    ],
   }
-  
+
   return JSON.stringify(exportData, null, 2)
 }

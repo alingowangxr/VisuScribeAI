@@ -1,38 +1,42 @@
 'use client'
 
-import React, { useState, Suspense, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ArrowLeft, Copy, Download, Check, FileJson, FileText } from 'lucide-react'
+import {
+  ArrowLeft,
+  Copy,
+  Download,
+  Check,
+  FileJson,
+  FileText,
+} from 'lucide-react'
 import { ImagePlan } from '@/lib/types'
 import { generateMarkdown, generateJson } from '@/lib/export-utils'
 import { toast } from 'sonner'
 
 function ExportContent() {
   const searchParams = useSearchParams()
-  const [plan, setPlan] = useState<ImagePlan | null>(null)
-  const [article, setArticle] = useState('')
-  const [copied, setCopied] = useState(false)
-
-  useEffect(() => {
+  const [plan] = useState<ImagePlan | null>(() => {
     const urlPlan = searchParams.get('plan_json')
+    if (!urlPlan) return null
+
+    try {
+      return JSON.parse(decodeURIComponent(urlPlan)) as ImagePlan
+    } catch (e) {
+      console.error('Failed to parse plan', e)
+      return null
+    }
+  })
+  const [article] = useState(() => {
     const urlArticle = searchParams.get('article')
-    
-    if (urlPlan) {
-      try {
-        setPlan(JSON.parse(decodeURIComponent(urlPlan)))
-      } catch (e) {
-        console.error('Failed to parse plan', e)
-      }
-    }
-    if (urlArticle) {
-      setArticle(decodeURIComponent(urlArticle))
-    }
-  }, [searchParams])
+    return urlArticle ? decodeURIComponent(urlArticle) : ''
+  })
+  const [copied, setCopied] = useState(false)
 
   if (!plan) {
     return (
@@ -45,7 +49,10 @@ function ExportContent() {
     )
   }
 
-  const markdownContent = generateMarkdown(plan, article).replace('# cc2image', '# VisuScribe AI')
+  const markdownContent = generateMarkdown(plan, article).replace(
+    '# cc2image',
+    '# VisuScribe AI'
+  )
   const jsonContent = generateJson(plan)
 
   const handleCopy = (content: string) => {
@@ -96,15 +103,28 @@ function ExportContent() {
                     JSON
                   </TabsTrigger>
                 </TabsList>
-                
+
                 <div className="flex items-center space-x-2">
                   <TabsContent value="markdown" className="mt-0">
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleCopy(markdownContent)}>
-                        {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCopy(markdownContent)}
+                      >
+                        {copied ? (
+                          <Check className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Copy className="h-4 w-4 mr-2" />
+                        )}
                         複製內容
                       </Button>
-                      <Button size="sm" onClick={() => handleDownload(markdownContent, 'cc2image-plan.md')}>
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleDownload(markdownContent, 'cc2image-plan.md')
+                        }
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         下載 .md
                       </Button>
@@ -112,11 +132,24 @@ function ExportContent() {
                   </TabsContent>
                   <TabsContent value="json" className="mt-0">
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleCopy(jsonContent)}>
-                        {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCopy(jsonContent)}
+                      >
+                        {copied ? (
+                          <Check className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Copy className="h-4 w-4 mr-2" />
+                        )}
                         複製 JSON
                       </Button>
-                      <Button size="sm" onClick={() => handleDownload(jsonContent, 'cc2image-plan.json')}>
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleDownload(jsonContent, 'cc2image-plan.json')
+                        }
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         下載 .json
                       </Button>
@@ -124,7 +157,7 @@ function ExportContent() {
                   </TabsContent>
                 </div>
               </CardHeader>
-              
+
               <div className="flex-1 overflow-hidden relative bg-background">
                 <TabsContent value="markdown" className="h-full m-0">
                   <ScrollArea className="h-full p-8">
@@ -154,25 +187,42 @@ function ExportContent() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
-                <h4 className="font-bold text-sm mb-1 text-primary">1. 手動優化提示詞</h4>
-                <p className="text-xs text-muted-foreground">將生成的提示詞複製到 Midjourney 或 Stable Diffusion 中進行更多風格實驗。</p>
+                <h4 className="font-bold text-sm mb-1 text-primary">
+                  1. 手動優化提示詞
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  將生成的提示詞複製到 Midjourney 或 Stable Diffusion
+                  中進行更多風格實驗。
+                </p>
               </div>
               <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
-                <h4 className="font-bold text-sm mb-1 text-primary">2. 匯入內容管理系統</h4>
-                <p className="text-xs text-muted-foreground">使用 JSON 格式將規劃方案匯入你的自定義 CMS 或知識管理工具。</p>
+                <h4 className="font-bold text-sm mb-1 text-primary">
+                  2. 匯入內容管理系統
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  使用 JSON 格式將規劃方案匯入你的自定義 CMS 或知識管理工具。
+                </p>
               </div>
               <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
-                <h4 className="font-bold text-sm mb-1 text-primary">3. 分享連結</h4>
-                <p className="text-xs text-muted-foreground">目前的 URL 已包含所有規劃數據，直接分享給隊友即可查看。</p>
+                <h4 className="font-bold text-sm mb-1 text-primary">
+                  3. 分享連結
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  目前的 URL 已包含所有規劃數據，直接分享給隊友即可查看。
+                </p>
               </div>
             </CardContent>
           </Card>
-          
-          <Button variant="outline" className="w-full h-12 font-bold" asChild>
-            <Link href="/editor">
-              繼續編輯
-            </Link>
-          </Button>
+
+          <Link
+            href="/editor"
+            className={buttonVariants({
+              variant: 'outline',
+              className: 'w-full h-12 font-bold',
+            })}
+          >
+            繼續編輯
+          </Link>
         </div>
       </div>
     </div>

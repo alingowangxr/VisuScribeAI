@@ -4,7 +4,11 @@ export function useGenerate() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const generate = async (prompt: string, aspectRatio: '21:9' | '16:9', provider: string = 'dalle'): Promise<string | null> => {
+  const generate = async (
+    prompt: string,
+    aspectRatio: '21:9' | '16:9',
+    provider: string = 'dalle'
+  ): Promise<string | null> => {
     setLoading(true)
     setError(null)
     try {
@@ -23,8 +27,8 @@ export function useGenerate() {
 
       const data = await response.json()
       return data.url
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Something went wrong')
       return null
     } finally {
       setLoading(false)

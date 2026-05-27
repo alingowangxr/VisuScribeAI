@@ -23,7 +23,7 @@ export function StyleCard({ id, selected, onClick }: StyleCardProps) {
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
+      <TooltipTrigger render={<div />}>
         <Card
           className={cn(
             'overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-primary/50 group',
@@ -49,7 +49,9 @@ export function StyleCard({ id, selected, onClick }: StyleCardProps) {
               )}
             </div>
             <div className="p-2 bg-background border-t">
-              <p className="text-[11px] font-bold truncate leading-tight">{name}</p>
+              <p className="text-[11px] font-bold truncate leading-tight">
+                {name}
+              </p>
             </div>
           </CardContent>
         </Card>

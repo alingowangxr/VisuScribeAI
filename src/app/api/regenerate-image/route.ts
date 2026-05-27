@@ -64,8 +64,10 @@ ${isCover ? '4. 封面圖需具備衝擊力且點明文章主旨。' : '4. 正�
     })
 
     return Response.json(object)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Regenerate API Error:', error)
-    return new Response(error.message || 'Internal Server Error', { status: 500 })
+    const message =
+      error instanceof Error ? error.message : 'Internal Server Error'
+    return new Response(message, { status: 500 })
   }
 }

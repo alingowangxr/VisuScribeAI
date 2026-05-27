@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { AlertCircle, RefreshCcw } from 'lucide-react'
 import Link from 'next/link'
 
@@ -30,9 +30,9 @@ export default function Error({
           <RefreshCcw className="w-4 h-4" />
           嘗試重試
         </Button>
-        <Button variant="outline" asChild>
-          <Link href="/">返回首頁</Link>
-        </Button>
+        <Link href="/" className={buttonVariants({ variant: 'outline' })}>
+          返回首頁
+        </Link>
       </div>
       {process.env.NODE_ENV === 'development' && (
         <pre className="mt-12 p-4 bg-muted rounded text-left text-xs overflow-auto max-w-full">

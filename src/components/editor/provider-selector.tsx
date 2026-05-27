@@ -16,10 +16,19 @@ interface ProviderSelectorProps {
   className?: string
 }
 
-export function ProviderSelector({ value, onChange, className }: ProviderSelectorProps) {
+export function ProviderSelector({
+  value,
+  onChange,
+  className,
+}: ProviderSelectorProps) {
   return (
     <div className={className}>
-      <Select value={value} onValueChange={onChange}>
+      <Select
+        value={value}
+        onValueChange={(nextValue) => {
+          if (nextValue) onChange(nextValue)
+        }}
+      >
         <SelectTrigger className="h-8 w-[140px] text-[10px] font-bold">
           <SelectValue placeholder="引擎" />
         </SelectTrigger>

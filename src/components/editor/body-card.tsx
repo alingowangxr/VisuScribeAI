@@ -2,12 +2,19 @@
 
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { BodySpec } from '@/lib/types'
+import { BodySpec, BodyStructure } from '@/lib/types'
 import { FieldEditor } from './field-editor'
 import { StructureSelector } from './structure-selector'
 import { AspectRatioBox } from '../aspect-ratio-box'
 import { Button } from '@/components/ui/button'
-import { Trash2, MoveUp, MoveDown, Sparkles, Loader2, Image as ImageIcon } from 'lucide-react'
+import {
+  Trash2,
+  MoveUp,
+  MoveDown,
+  Sparkles,
+  Loader2,
+  Image as ImageIcon,
+} from 'lucide-react'
 
 interface BodyCardProps {
   index: number
@@ -34,7 +41,10 @@ export function BodyCard({
   onGenerateImage,
   isGeneratingImage,
 }: BodyCardProps) {
-  const updateField = (field: keyof BodySpec, value: any) => {
+  const updateField = <K extends keyof BodySpec>(
+    field: K,
+    value: BodySpec[K]
+  ) => {
     onChange({ ...spec, [field]: value })
   }
 
@@ -82,16 +92,31 @@ export function BodyCard({
         </div>
         <div className="flex items-center space-x-1">
           {onMoveUp && (
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onMoveUp}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onMoveUp}
+            >
               <MoveUp className="h-3 w-3" />
             </Button>
           )}
           {onMoveDown && (
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onMoveDown}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onMoveDown}
+            >
               <MoveDown className="h-3 w-3" />
             </Button>
           )}
-          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={onDelete}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-destructive"
+            onClick={onDelete}
+          >
             <Trash2 className="h-3 w-3" />
           </Button>
         </div>
@@ -107,18 +132,22 @@ export function BodyCard({
             />
             <StructureSelector
               selected={spec.structure}
-              onSelect={(s) => updateField('structure', s)}
+              onSelect={(s: BodyStructure) => updateField('structure', s)}
             />
             <FieldEditor
               label="核心模塊 (Modules)"
               value={spec.modules.join('、')}
-              onChange={(v) => updateField('modules', v.split(/[、,，]/).filter(Boolean))}
+              onChange={(v) =>
+                updateField('modules', v.split(/[、,，]/).filter(Boolean))
+              }
               placeholder="例如：收集、整理、應用 (用、分隔)"
             />
             <FieldEditor
               label="必要註釋 (Notes)"
               value={spec.notes.join('、')}
-              onChange={(v) => updateField('notes', v.split(/[、,，]/).filter(Boolean))}
+              onChange={(v) =>
+                updateField('notes', v.split(/[、,，]/).filter(Boolean))
+              }
               placeholder="例如：標籤系統、雙向連結 (用、分隔)"
               isTextArea
             />

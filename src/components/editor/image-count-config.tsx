@@ -15,7 +15,9 @@ export function ImageCountConfig({ count, onChange }: ImageCountConfigProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-lg font-bold">配圖數量 (1 封面 + {count} 正文)</Label>
+        <Label className="text-lg font-bold">
+          配圖數量 (1 封面 + {count} 正文)
+        </Label>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
@@ -39,7 +41,10 @@ export function ImageCountConfig({ count, onChange }: ImageCountConfigProps) {
         min={0}
         max={10}
         step={1}
-        onValueChange={(vals) => onChange(vals[0])}
+        onValueChange={(vals) => {
+          const nextValue = Array.isArray(vals) ? vals[0] : vals
+          onChange(nextValue)
+        }}
       />
     </div>
   )

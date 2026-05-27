@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { ImagePlan } from '@/lib/types'
 
 export function useProject(
@@ -12,7 +12,6 @@ export function useProject(
   plan: ImagePlan | null,
   setPlan: (p: ImagePlan | null) => void
 ) {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Initialize from URL
@@ -32,7 +31,7 @@ export function useProject(
         console.error('Failed to parse plan from URL', e)
       }
     }
-  }, [])
+  }, [searchParams, setArticle, setBodyCount, setPlan, setStyleId])
 
   // Sync to URL
   const syncToUrl = useCallback(() => {
