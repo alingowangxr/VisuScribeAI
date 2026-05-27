@@ -7,7 +7,7 @@ export function useGenerate() {
   const generate = async (
     prompt: string,
     aspectRatio: '21:9' | '16:9',
-    provider: string = 'dalle'
+    provider: string = 'gpt-image-2'
   ): Promise<string | null> => {
     setLoading(true)
     setError(null)

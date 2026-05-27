@@ -39,7 +39,7 @@ function EditorContent() {
   const { t } = useI18n()
   const [article, setArticle] = useState('')
   const [styleId, setStyleId] = useState('handdrawn_knowledge_card')
-  const [provider, setProvider] = useState('dalle')
+  const [provider, setProvider] = useState('gpt-image-2')
   const [bodyCount, setBodyCount] = useState(3)
   const [globalAnchor, setGlobalAnchor] = useState(
     STYLE_ANCHORS['handdrawn_knowledge_card']
@@ -85,7 +85,9 @@ function EditorContent() {
       if (saved.styleId) setStyleId(saved.styleId)
       if (saved.bodyCount) setBodyCount(saved.bodyCount)
       if (saved.plan) setPlan(saved.plan)
-      if (saved.provider) setProvider(saved.provider)
+      if (saved.provider) {
+        setProvider(saved.provider === 'dalle' ? 'gpt-image-2' : saved.provider)
+      }
     }
   )
 

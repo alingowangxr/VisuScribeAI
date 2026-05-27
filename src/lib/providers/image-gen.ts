@@ -7,18 +7,40 @@ export interface ImageGenProvider {
   generate: (options: ImageGenOptions) => Promise<string>
 }
 
-export class DalleProvider implements ImageGenProvider {
+type OpenAIImageResponse = {
+  data?: Array<{
+    b64_json?: string
+    url?: string
+  }>
+  error?: {
+    message?: string
+  }
+}
+
+type GeminiImageResponse = {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        inlineData?: {
+          data?: string
+          mimeType?: string
+        }
+        text?: string
+      }>
+    }
+  }>
+  error?: {
+    message?: string
+  }
+}
+
+export class GptImageProvider implements ImageGenProvider {
   async generate({ prompt, aspectRatio }: ImageGenOptions): Promise<string> {
-    // Note: Vercel AI SDK generateImage currently returns a URL or base64
-    // DALL-E 3 supports '1024x1024' or '1792x1024' (wide) or '1024x1792' (tall)
-    // We'll map our ratios to DALL-E 3 sizes
     const size =
       aspectRatio === '21:9' || aspectRatio === '16:9'
-        ? '1792x1024'
+        ? '1536x1024'
         : '1024x1024'
 
-    // Using native OpenAI fetch if generateImage is not yet fully available/stable in current SDK version for images
-    // Or just use the experimental generateImage
     const response = await fetch(
       'https://api.openai.com/v1/images/generations',
       {
@@ -28,24 +50,92 @@ export class DalleProvider implements ImageGenProvider {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'dall-e-3',
-          prompt: prompt,
+          model: 'gpt-image-2',
+          prompt,
           n: 1,
-          size: size,
-          quality: 'hd',
+          size,
+          quality: 'high',
+          output_format: 'png',
         }),
       }
     )
 
+    const data = (await response.json()) as OpenAIImageResponse
+
     if (!response.ok) {
-      const error = await response.json()
       throw new Error(
-        error.error?.message || 'Failed to generate image with DALL-E'
+        data.error?.message || 'Failed to generate image with GPT Image 2'
       )
     }
 
-    const data = await response.json()
-    return data.data[0].url
+    const image = data.data?.[0]
+    if (image?.b64_json) {
+      return `data:image/png;base64,${image.b64_json}`
+    }
+    if (image?.url) {
+      return image.url
+    }
+
+    throw new Error('GPT Image 2 did not return an image')
+  }
+}
+
+export class NanoBananaProProvider implements ImageGenProvider {
+  async generate({ prompt, aspectRatio }: ImageGenOptions): Promise<string> {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY
+    if (!apiKey) {
+      throw new Error('Missing GEMINI_API_KEY for Nano Banana Pro')
+    }
+
+    const response = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: prompt }],
+            },
+          ],
+          generationConfig: {
+            responseModalities: ['Image'],
+            responseFormat: {
+              image: {
+                aspectRatio,
+                imageSize: '1K',
+              },
+            },
+          },
+        }),
+      }
+    )
+
+    const data = (await response.json()) as GeminiImageResponse
+
+    if (!response.ok) {
+      throw new Error(
+        data.error?.message || 'Failed to generate image with Nano Banana Pro'
+      )
+    }
+
+    const imagePart = data.candidates?.[0]?.content?.parts?.find(
+      (part) => part.inlineData?.data
+    )
+    const imageData = imagePart?.inlineData?.data
+    if (imageData) {
+      const mimeType = imagePart.inlineData?.mimeType || 'image/png'
+      return `data:${mimeType};base64,${imageData}`
+    }
+
+    const text = data.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text)
+      .filter(Boolean)
+      .join(' ')
+    throw new Error(text || 'Nano Banana Pro did not return an image')
   }
 }
 
@@ -57,9 +147,15 @@ export class MockProvider implements ImageGenProvider {
   }
 }
 
-export function getProvider(name: string = 'dalle'): ImageGenProvider {
-  if (name === 'mock' || !process.env.OPENAI_API_KEY) {
+export function getProvider(name: string = 'gpt-image-2'): ImageGenProvider {
+  if (name === 'mock') {
     return new MockProvider()
   }
-  return new DalleProvider()
+  if (name === 'nano-banana-pro') {
+    return new NanoBananaProProvider()
+  }
+  if (!process.env.OPENAI_API_KEY) {
+    return new MockProvider()
+  }
+  return new GptImageProvider()
 }

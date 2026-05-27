@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Monitor, Zap } from 'lucide-react'
+import { Monitor, Sparkles, Zap } from 'lucide-react'
 
 interface ProviderSelectorProps {
   value: string
@@ -29,14 +29,20 @@ export function ProviderSelector({
           if (nextValue) onChange(nextValue)
         }}
       >
-        <SelectTrigger className="h-8 w-[140px] text-[10px] font-bold">
+        <SelectTrigger className="h-8 w-[180px] text-[10px] font-bold">
           <SelectValue placeholder="引擎" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="dalle">
+          <SelectItem value="gpt-image-2">
             <div className="flex items-center gap-2">
               <Zap className="h-3 w-3 text-yellow-500" />
-              <span>DALL-E 3</span>
+              <span>GPT Image 2</span>
+            </div>
+          </SelectItem>
+          <SelectItem value="nano-banana-pro">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-3 w-3 text-emerald-500" />
+              <span>Nano Banana Pro</span>
             </div>
           </SelectItem>
           <SelectItem value="mock">
