@@ -160,7 +160,32 @@ export const STYLE_IMAGES: Record<string, string> = {
   glassmorphism_gradient_blob: '08-glassmorphism-gradient-blob.jpg',
   embossed_typography_poster: '09-embossed-typography-poster.jpg',
   acrylic_dimensional_type: '10-acrylic-dimensional-type.jpg',
-  editorial_line_character: '34-editorial-line-character.png',
+  dark_neon_search_ui: '11-dark-neon-search-ui.jpg',
+  black_void_glowing_hands: '12-black-void-glowing-hands.jpg',
+  soft_neumorphism_ui: '13-soft-neumorphism-ui.jpg',
+  minimal_line_shadow_brand: '14-minimal-line-shadow-brand.jpg',
+  white_mono_texture_editorial: '15-white-mono-texture-editorial.jpg',
+  minimal_architecture_portfolio: '16-minimal-architecture-portfolio.jpg',
+  minimal_healing_metaphor_comic: '17-minimal-healing-metaphor-comic.jpg',
+  retro_minimal_poster_illustration:
+    '18-retro-minimal-poster-illustration.jpg',
+  editorial_balloon_collage: '19-editorial-balloon-collage.jpg',
+  transparent_architectural_type: '20-transparent-architectural-type.jpg',
+  paper_cut_profile_silhouette: '21-paper-cut-profile-silhouette.jpg',
+  torn_paper_note_minimal: '22-torn-paper-note-minimal.jpg',
+  fluffy_soft_typography: '23-fluffy-soft-typography.jpg',
+  cloud_typography_cover: '24-cloud-typography-cover.jpg',
+  foam_bubble_typography: '25-foam-bubble-typography.jpg',
+  embroidered_patch_brand: '26-embroidered-patch-brand.jpg',
+  luxury_gold_typography: '27-luxury-gold-typography.jpg',
+  miniature_map_life_scene: '28-miniature-map-life-scene.jpg',
+  miniature_checklist_scene: '29-miniature-checklist-scene.jpg',
+  fabric_micro_scene_ad: '30-fabric-micro-scene-ad.jpg',
+  giant_letter_lifestyle_scene: '31-giant-letter-lifestyle-scene.jpg',
+  oriental_floral_minimal_editorial:
+    '32-oriental-floral-minimal-editorial.jpg',
+  zen_ink_philosophy_poster: '33-zen-ink-philosophy-poster.jpg',
+  editorial_line_character: '34-editorial-line-character.jpg',
 }
 
 export const STYLES: StyleInfo[] = Object.keys(STYLE_NAMES).map((id) => ({
