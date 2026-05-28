@@ -69,6 +69,16 @@ export const STYLE_ANCHORS: Record<string, string> = {
     '整體風格為禪意水墨風：米白宣紙質感背景，大面積留白，黑色水墨筆觸作為主體，搭配一個紅色圓日。可以有極小的人物剪影、行者、松樹、山石。整體安靜、剋制、東方、內省、有修行感。',
   editorial_line_character:
     '整體風格為編輯線稿風：現代編輯設計語言，黑白極簡線稿人物，乾淨扁平幾何比例，簡單臉部。把主題轉譯成日常城市生活場景，雜誌式大標題、大量留白。柔和色塊只用於背景、包裝、UI 面板或分區塊。',
+  editorial_object_annotation_card:
+    '整體風格為具象標注風：暖白或淺米紙感背景，清楚的單一主體，旁邊有編號、箭頭、標籤、框線與短註釋，像高質感方法論卡片、設計思維筆記或知識型品牌海報。主體與標注彼此對齊，信息層級清楚，字少但準，不要 PPT 感，不要密集小字，不要高飽和，不要雜亂拼貼。',
+  crowd_typography_scene:
+    '整體風格為人群造字風：像報導封面或社會議題海報，許多微小人物或剪影組成人字、數字、符號、路徑或大型字標。背景乾淨，人物層次清楚，群體構成具有節奏與秩序感，強調社會性、規模感、變動感與敘事張力。不要做成卡通大集合，不要過多顏色，不要擁擠失焦。',
+  semantic_material_typography:
+    '整體風格為語義字體風：標題文字本身是主視覺，字體質感與內容語義直接對應，例如金屬、木質、石材、玻璃、布料、泡沫、紙張或發光材質。背景極簡，字形大而清楚，讓文字既是訊息也是圖像。整體適合短標題、品牌詞、概念詞與欄目名，不要複雜插畫，不要資訊爆炸。',
+  quirky_doodle_character_flow:
+    '整體風格為怪誕小人風：手繪筆觸、線條輕鬆、有點古怪但可讀，畫面中有簡化小人、工具、箭頭、氣泡、流程框與零散標籤。整體像把複雜工作流畫成一張好懂的流程海報，保留玩味、機靈與一點混亂感，但結構仍清楚。不要過度精緻，不要商業海報化，不要大段文字。',
+  minimal_line_art:
+    '整體風格為線條藝術風：極少筆觸、黑線或深灰線、超大量留白，像一筆畫、連續線條或非常克制的線稿插畫。主體可以是人物、城市、旅行、學習、關係、靈感或情緒隱喻，重點在輪廓和姿態，不在細節。整體安靜、現代、詩意、留白感強，不要填滿畫面，不要重色塊，不要複雜背景。',
 }
 
 export const STYLE_NAMES: Record<string, string> = {
@@ -106,12 +116,17 @@ export const STYLE_NAMES: Record<string, string> = {
   oriental_floral_minimal_editorial: '花藝留白風',
   zen_ink_philosophy_poster: '禪意水墨風',
   editorial_line_character: '編輯線稿風',
+  editorial_object_annotation_card: '具象標注風',
+  crowd_typography_scene: '人群造字風',
+  semantic_material_typography: '語義字體風',
+  quirky_doodle_character_flow: '怪誕小人風',
+  minimal_line_art: '線條藝術風',
 }
 
 export const STYLE_GROUPS = [
   {
     name: '知識圖解類',
-    ids: ['handdrawn_knowledge_card', 'study_note_card', 'pastel_learning_pyramid', 'childlike_cultural_infographic']
+    ids: ['handdrawn_knowledge_card', 'study_note_card', 'pastel_learning_pyramid', 'childlike_cultural_infographic', 'editorial_object_annotation_card']
   },
   {
     name: '東方 / 人文 / 情緒插畫類',
@@ -119,7 +134,7 @@ export const STYLE_GROUPS = [
   },
   {
     name: '極簡設計 / 材質海報類',
-    ids: ['frosted_glass_editorial', 'translucent_object_editorial', 'glassmorphism_gradient_blob', 'soft_neumorphism_ui', 'minimal_line_shadow_brand', 'white_mono_texture_editorial', 'minimal_architecture_portfolio', 'editorial_line_character']
+    ids: ['frosted_glass_editorial', 'translucent_object_editorial', 'glassmorphism_gradient_blob', 'soft_neumorphism_ui', 'minimal_line_shadow_brand', 'white_mono_texture_editorial', 'minimal_architecture_portfolio', 'editorial_line_character', 'semantic_material_typography', 'minimal_line_art']
   },
   {
     name: '字體材質類',
@@ -131,7 +146,11 @@ export const STYLE_GROUPS = [
   },
   {
     name: '微縮場景 / 品牌廣告類',
-    ids: ['miniature_map_life_scene', 'miniature_checklist_scene', 'fabric_micro_scene_ad', 'giant_letter_lifestyle_scene']
+    ids: ['miniature_map_life_scene', 'miniature_checklist_scene', 'fabric_micro_scene_ad', 'giant_letter_lifestyle_scene', 'crowd_typography_scene']
+  },
+  {
+    name: '流程 / 工作流類',
+    ids: ['quirky_doodle_character_flow']
   }
 ]
 
@@ -186,6 +205,11 @@ export const STYLE_IMAGES: Record<string, string> = {
     '32-oriental-floral-minimal-editorial.jpg',
   zen_ink_philosophy_poster: '33-zen-ink-philosophy-poster.jpg',
   editorial_line_character: '34-editorial-line-character.jpg',
+  editorial_object_annotation_card: '35-editorial-object-annotation-card.jpg',
+  crowd_typography_scene: '36-crowd-typography-scene.jpg',
+  semantic_material_typography: '37-semantic-material-typography.jpg',
+  quirky_doodle_character_flow: '38-quirky-doodle-character-flow.png',
+  minimal_line_art: '39-minimal-line-art.jpg',
 }
 
 export const STYLES: StyleInfo[] = Object.keys(STYLE_NAMES).map((id) => ({
@@ -196,6 +220,7 @@ export const STYLES: StyleInfo[] = Object.keys(STYLE_NAMES).map((id) => ({
 
 export function getAutoMatchStyle(content: string): string {
   // Enhanced auto-match based on SKILL.md
+  if (content.match(/具象標注|方法論|設計思維|信任驗證|工作流原則|知識卡片/)) return 'editorial_object_annotation_card'
   if (content.match(/正文配圖|方法論|流程|對比|知識系統/)) return 'handdrawn_knowledge_card'
   if (content.match(/文化|歷史|人文|哲學|東方智慧|古籍|文明/)) return 'oriental_editorial_illustration'
   if (content.match(/學習方法|筆記整理|複習|考試|效率技巧/)) return 'study_note_card'
@@ -225,6 +250,10 @@ export function getAutoMatchStyle(content: string): string {
   if (content.match(/任務清單|執行力|打卡|目標拆解/)) return 'miniature_checklist_scene'
   if (content.match(/匠心|勞動節|手工|製造業/)) return 'fabric_micro_scene_ad'
   if (content.match(/字母空間|系列廣告/)) return 'giant_letter_lifestyle_scene'
+  if (content.match(/社會議題|就業|人口|城市|群體|趨勢|公共政策|平台經濟|組織協作/)) return 'crowd_typography_scene'
+  if (content.match(/字體材質|材質字|品牌字|欄目名|語義字體|關鍵詞視覺化|強標題/)) return 'semantic_material_typography'
+  if (content.match(/工作流|工具鏈|自動化|流程圖|Prompt|內容生產系統|怪誕小人/)) return 'quirky_doodle_character_flow'
+  if (content.match(/線條藝術|極簡線條|一筆畫|留白|旅行|畢業|學習|關係|城市/)) return 'minimal_line_art'
   if (content.match(/女性|母親節|思念|花瓣|節氣/)) return 'oriental_floral_minimal_editorial'
   if (content.match(/哲學|修行|自律|覺察/)) return 'zen_ink_philosophy_poster'
   if (content.match(/黑白線稿|編輯插畫|角色系統/)) return 'editorial_line_character'

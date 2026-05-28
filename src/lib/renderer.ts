@@ -5,6 +5,53 @@ export function renderCover(spec: CoverSpec): string {
   const styleId = spec.style_id || 'handdrawn_knowledge_card'
   const anchor = STYLE_ANCHORS[styleId] || STYLE_ANCHORS['handdrawn_knowledge_card']
 
+  if (styleId === 'editorial_object_annotation_card') {
+    return `請生成一張具象標注風的中文文章封面圖。
+主題是「${spec.title}」。畫面使用暖白或淺米色紙感背景，整體像高質感方法論卡片、設計思維筆記或知識型品牌海報。
+畫面中心是一個清晰的單一主體，核心隱喻是「${spec.metaphor}」，畫面元素包括：「${spec.elements}」。
+主體周圍有編號、箭頭、標籤、框線與短註釋，像研究筆記或產品拆解圖一樣一眼能看懂。標注要和主體對齊，層級清楚，不要雜亂。
+標題寫「${spec.title}」，放在上方或左側，字體自然、克制、偏編輯感。副標題寫「${spec.subtitle || spec.bottomSentence}」，字號更小，像說明標籤。
+整體要有結構感與證據感，不要做成 PPT，不要密集小字，不要高飽和，不要卡通拼貼，不要英文亂碼。
+${anchor}`
+  }
+
+  if (styleId === 'crowd_typography_scene') {
+    return `請生成一張人群造字風的中文文章封面圖。
+主題是「${spec.title}」。畫面像報導封面或社會議題海報，具有規模感、秩序感與敘事張力。
+背景乾淨，畫面中由許多微小人物或剪影組成一個大型字標、符號、路徑或構圖主體，核心主題是「${spec.metaphor}」。畫面元素包括：「${spec.elements}」。
+人物要形成節奏與方向感，像被同一個社會力量推動，但仍保持清楚的輪廓與層次。可以使用少量黑白灰與一到兩個低飽和強調色。
+標題寫「${spec.title}」，排版像深度報導首屏或社會議題封面，字要大、清楚、有重量。副標題寫「${spec.subtitle || spec.bottomSentence}」。
+整體不要卡通化，不要擁擠失焦，不要多餘裝飾，不要高飽和。
+${anchor}`
+  }
+
+  if (styleId === 'semantic_material_typography') {
+    return `請生成一張語義字體風的中文文章封面圖。
+主題是「${spec.title}」。畫面以文字本身作為主視覺，標題字體的材質要直接對應內容語義。
+把「${spec.title}」做成大字主體，材質可以是金屬、木質、石材、玻璃、布料、泡沫、紙張或發光材質之一。背景極簡，留白充足。
+核心隱喻是「${spec.metaphor}」，畫面元素包括：「${spec.elements}」。整體要像概念海報或品牌欄目封面，文字既是訊息也是圖像。
+副標題「${spec.subtitle}」放在邊緣或下方，字小、剋制、清楚。不要加入過多插畫，不要讓畫面資訊爆炸。
+${anchor}`
+  }
+
+  if (styleId === 'quirky_doodle_character_flow') {
+    return `請生成一張怪誕小人風的中文文章封面圖。
+主題是「${spec.title}」。畫面使用手繪筆觸、輕鬆線條與略帶古怪的幽默感，像把複雜工作流畫成一張好懂的流程海報。
+畫面中有簡化小人、工具、箭頭、氣泡、流程框與零散標籤，核心隱喻是「${spec.metaphor}」，畫面元素包括：「${spec.elements}」。
+結構要清楚，但視覺語氣可以有點機靈、隨性、帶一點混亂感。標題寫「${spec.title}」，副標題寫「${spec.subtitle || spec.bottomSentence}」。
+整體不要過度精緻，不要商業海報化，不要大段文字，不要高飽和，不要複雜背景。
+${anchor}`
+  }
+
+  if (styleId === 'minimal_line_art') {
+    return `請生成一張線條藝術風的中文文章封面圖。
+主題是「${spec.title}」。畫面使用極少筆觸、黑線或深灰線，保留超大量留白，像一筆畫或非常克制的線稿插畫。
+主體可以是人物、城市、旅行、學習、關係、靈感或情緒隱喻，核心隱喻是「${spec.metaphor}」，畫面元素包括：「${spec.elements}」。
+重點在輪廓、姿態與留白，不在細節。標題「${spec.title}」排版要安靜、現代、清楚，副標題「${spec.subtitle || spec.bottomSentence}」更小。
+整體詩意、現代、留白感強，不要填滿畫面，不要重色塊，不要複雜背景，不要卡通化。
+${anchor}`
+  }
+
   if (styleId === 'oriental_editorial_illustration') {
     return `請生成一張典籍山水風的中文文章封面圖。
 主題是「${spec.title}」。畫面整體像高端文化雜誌或圖書封面，具有新中式東方美學、歷史感、文學感和高級出版物質感。
@@ -147,6 +194,53 @@ ${anchor}`
 export function renderBody(spec: BodySpec): string {
   const styleId = spec.style_id || 'handdrawn_knowledge_card'
   const anchor = STYLE_ANCHORS[styleId] || STYLE_ANCHORS['handdrawn_knowledge_card']
+
+  if (styleId === 'editorial_object_annotation_card') {
+    return `請生成一張具象標注風的中文文章正文配圖。
+這張圖用於表達文章中的這句話：「${spec.title}」。
+畫面使用暖白或淺米紙感背景，中心是一個單一主體或清楚的物件，核心隱喻是「${spec.metaphor}」。
+畫面周圍加入編號、箭頭、標籤、框線與短註釋，將正文中的重點拆成 3 到 5 個清楚區塊，核心內容包括：「${spec.modules.join('、')}」。
+必要註釋：「${spec.notes.join('、')}」。整體像方法論卡片、產品拆解圖或研究筆記，信息感要強但畫面要乾淨。
+底部可以放一句很輕的結論：「${spec.bottomSentence}」。
+${anchor}`
+  }
+
+  if (styleId === 'crowd_typography_scene') {
+    return `請生成一張人群造字風的中文文章正文配圖。
+這張圖用於表達文章中的這句話：「${spec.title}」。
+畫面像社會議題報導中的正文配圖，由許多微小人物或剪影組成一個大型字標、符號、圖形或路徑。核心主題是「${spec.metaphor}」。
+核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+人物要有秩序與方向感，不要變成亂七八糟的卡通群像。整體保持克制、清楚、帶敘事性。
+底部可以放一句很輕的結論：「${spec.bottomSentence}」。
+${anchor}`
+  }
+
+  if (styleId === 'semantic_material_typography') {
+    return `請生成一張語義字體風的中文文章正文配圖。
+這張圖用於表達文章中的這句話：「${spec.title}」。
+畫面以一個或少數幾個關鍵字為主視覺，字體材質直接對應內容語義，例如金屬、木質、石材、玻璃、布料、泡沫、紙張或發光材質。
+核心隱喻是「${spec.metaphor}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+背景極簡，留白充足，讓文字既是內容也是圖像。底部可以放一句很輕的結論：「${spec.bottomSentence}」。
+${anchor}`
+  }
+
+  if (styleId === 'quirky_doodle_character_flow') {
+    return `請生成一張怪誕小人風的中文文章正文配圖。
+這張圖用於表達文章中的這句話：「${spec.title}」。
+畫面像把複雜工作流、工具鏈或流程拆解成一張手繪海報。畫面中有簡化小人、工具、箭頭、氣泡、流程框與零散標籤。
+核心隱喻是「${spec.metaphor}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+結構清楚但語氣輕鬆，帶一點古怪與機靈感。底部可以放一句很輕的結論：「${spec.bottomSentence}」。
+${anchor}`
+  }
+
+  if (styleId === 'minimal_line_art') {
+    return `請生成一張線條藝術風的中文文章正文配圖。
+這張圖用於表達文章中的這句話：「${spec.title}」。
+畫面使用極少筆觸、黑線或深灰線，主體以輪廓、姿態和留白表達，不要填滿畫面。
+核心隱喻是「${spec.metaphor}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+整體安靜、現代、詩意，適合旅行、學習、關係、靈感或情緒主題。底部可以放一句很輕的結論：「${spec.bottomSentence}」。
+${anchor}`
+  }
 
   if (styleId === 'study_note_card' || spec.structure === '學習筆記卡片') {
     return `請生成一張學習筆記風的中文知識圖。

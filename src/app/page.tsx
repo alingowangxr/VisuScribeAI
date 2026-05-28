@@ -60,7 +60,7 @@ export default function HomePage() {
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
               把長篇文章、選題或知識點，自動拆解為一套精美且風格統一的視覺資產。
-              支持 34 套內置風格，完美適配小紅書、公眾號與設計提案。
+              支持 39 套內置風格，完美適配小紅書、公眾號與設計提案。
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/editor">
@@ -80,7 +80,7 @@ export default function HomePage() {
         <section className="py-24">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">內置 34 套專業風格</h2>
+              <h2 className="text-3xl font-bold mb-4">內置 39 套專業風格</h2>
               <p className="text-muted-foreground">
                 從手繪知識圖解到典籍山水，滿足各種內容場景
               </p>
