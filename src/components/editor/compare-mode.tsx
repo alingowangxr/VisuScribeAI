@@ -67,7 +67,7 @@ export function CompareMode({ plan, onClose }: CompareModeProps) {
               content={renderA(plan.cover, 'cover')}
               imageId={styleA}
             />
-            {plan.bodies.map((body, i) => (
+            {(plan.bodies || []).map((body, i) => (
               <CompareCard
                 key={i}
                 title={`正文 ${i + 1} Prompt`}
@@ -102,7 +102,7 @@ export function CompareMode({ plan, onClose }: CompareModeProps) {
               content={renderB(plan.cover, 'cover')}
               imageId={styleB}
             />
-            {plan.bodies.map((body, i) => (
+            {(plan.bodies || []).map((body, i) => (
               <CompareCard
                 key={i}
                 title={`正文 ${i + 1} Prompt`}

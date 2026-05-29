@@ -259,7 +259,7 @@ function ExportContent() {
                         </div>
                       </div>
 
-                      {plan.bodies.map((body, i) => (
+                      {(plan.bodies || []).map((body, i) => (
                         <div key={i} className="space-y-4">
                           <div className="flex items-center justify-between border-b pb-2">
                             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">圖 {i+2}｜正文</h3>

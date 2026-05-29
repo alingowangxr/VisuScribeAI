@@ -25,7 +25,8 @@ export function generateMarkdown(plan: ImagePlan, article: string): string {
   md += `\n---\n\n`
 
   // Bodies
-  plan.bodies.forEach((body, i) => {
+  const bodies = plan.bodies || []
+  bodies.forEach((body, i) => {
     md += `### 圖 ${i + 2}｜正文配圖\n`
     md += `- **題圖**：${body.title}\n`
     md += `- **結構**：${body.structure}\n`
@@ -56,7 +57,7 @@ export function generateJson(plan: ImagePlan): string {
         ...plan.cover,
         prompt: renderCover(plan.cover),
       },
-      ...plan.bodies.map((body, i) => ({
+      ...(plan.bodies || []).map((body, i) => ({
         id: `body_${(i + 1).toString().padStart(2, '0')}`,
         type: 'body',
         aspect_ratio: '16:9',

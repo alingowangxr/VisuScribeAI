@@ -487,7 +487,7 @@ function EditorContent() {
                 <Separator className="flex-1" />
               </div>
 
-              {plan.bodies.map((body, i) => (
+              {(plan.bodies || []).map((body, i) => (
                 <section key={i} className="space-y-4">
                   <BodyCard
                     index={i}

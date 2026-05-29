@@ -18,7 +18,7 @@ export function stripLargeGeneratedImages(
   if (!plan) return null
 
   return {
-    cover: stripLargeGeneratedUrl(plan.cover),
-    bodies: plan.bodies.map(stripLargeGeneratedUrl),
+    cover: plan.cover ? stripLargeGeneratedUrl(plan.cover) : undefined as unknown as CoverSpec,
+    bodies: Array.isArray(plan.bodies) ? plan.bodies.map(stripLargeGeneratedUrl) : [],
   }
 }
