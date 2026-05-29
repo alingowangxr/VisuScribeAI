@@ -39,6 +39,7 @@ export function usePersistence<T>(
 ) {
   const isInitialized = useRef(false)
   const onRestoreRef = useRef(onRestore)
+  const lastSavedStr = useRef<string>('')
 
   // Keep ref updated to always point to the latest callback without triggering dependencies
   useEffect(() => {
@@ -49,17 +50,24 @@ export function usePersistence<T>(
   useEffect(() => {
     if (isInitialized.current) {
       const storageKey = `visuscribe_${key}`
+      const currentStr = JSON.stringify(data)
+      
+      if (currentStr === lastSavedStr.current) {
+        return
+      }
+
       try {
-        localStorage.setItem(storageKey, JSON.stringify(data))
+        localStorage.setItem(storageKey, currentStr)
+        lastSavedStr.current = currentStr
       } catch (error) {
         if (!isQuotaExceededError(error)) {
           throw error
         }
 
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify(stripGeneratedDataUrls(data))
-        )
+        const strippedData = stripGeneratedDataUrls(data)
+        const strippedStr = JSON.stringify(strippedData)
+        localStorage.setItem(storageKey, strippedStr)
+        lastSavedStr.current = strippedStr
       }
     }
   }, [key, data])
@@ -71,6 +79,7 @@ export function usePersistence<T>(
       try {
         const parsed = JSON.parse(saved)
         onRestoreRef.current(parsed)
+        lastSavedStr.current = saved
         isInitialized.current = true
         return true
       } catch (e) {
@@ -83,13 +92,16 @@ export function usePersistence<T>(
 
   const clear = useCallback(() => {
     localStorage.removeItem(`visuscribe_${key}`)
+    lastSavedStr.current = ''
   }, [key])
+
+  const setInitialized = useCallback((val: boolean) => {
+    isInitialized.current = val
+  }, [])
 
   return {
     restore,
     clear,
-    setInitialized: (val: boolean) => {
-      isInitialized.current = val
-    },
+    setInitialized,
   }
 }
