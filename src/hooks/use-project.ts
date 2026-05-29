@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ImagePlan } from '@/lib/types'
 import { stripLargeGeneratedImages } from '@/lib/plan-serialization'
@@ -14,9 +14,13 @@ export function useProject(
   setPlan: (p: ImagePlan | null) => void
 ) {
   const searchParams = useSearchParams()
+  const hasInitialized = useRef(false)
 
   // Initialize from URL
   useEffect(() => {
+    if (hasInitialized.current) return
+    hasInitialized.current = true
+
     const urlArticle = searchParams.get('article')
     const urlStyle = searchParams.get('style')
     const urlCount = searchParams.get('count')

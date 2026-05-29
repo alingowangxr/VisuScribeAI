@@ -22,7 +22,7 @@ function stripGeneratedDataUrls(value: unknown): unknown {
       if (
         entryKey === 'generatedUrl' &&
         typeof entryValue === 'string' &&
-        entryValue.startsWith('data:')
+        (entryValue.startsWith('data:') || entryValue.startsWith('blob:'))
       ) {
         return []
       }
@@ -38,6 +38,12 @@ export function usePersistence<T>(
   onRestore: (data: T) => void
 ) {
   const isInitialized = useRef(false)
+  const onRestoreRef = useRef(onRestore)
+
+  // Keep ref updated to always point to the latest callback without triggering dependencies
+  useEffect(() => {
+    onRestoreRef.current = onRestore
+  }, [onRestore])
 
   // Save to localStorage on data change, but only after initialization
   useEffect(() => {
@@ -64,7 +70,7 @@ export function usePersistence<T>(
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
-        onRestore(parsed)
+        onRestoreRef.current(parsed)
         isInitialized.current = true
         return true
       } catch (e) {
@@ -73,7 +79,7 @@ export function usePersistence<T>(
     }
     isInitialized.current = true
     return false
-  }, [key, onRestore])
+  }, [key])
 
   const clear = useCallback(() => {
     localStorage.removeItem(`visuscribe_${key}`)

@@ -5,6 +5,29 @@ export function renderCover(spec: CoverSpec): string {
   const styleId = spec.style_id || 'handdrawn_knowledge_card'
   const anchor = STYLE_ANCHORS[styleId] || STYLE_ANCHORS['handdrawn_knowledge_card']
 
+  if (styleId.startsWith('gz_')) {
+    const isSwiss = styleId.includes('_swiss_')
+    const themeName = styleId.split('_').pop()?.replace(/-/g, ' ')
+    
+    if (isSwiss) {
+      return `請為一個瑞士國際主義風格（Swiss International Style）的設計生成一張純淨的背景圖或核心視覺元素。
+主題是「${spec.title}」，副標題「${spec.subtitle}」。
+背景要求：極簡、現代、具有強烈的網格感與幾何結構感。
+核心視覺元素：可以是一個高度抽象的幾何體、精密儀器局部、或者是能體現「${spec.metaphor}」的極簡物件。
+構圖：非對稱平衡，留出大量乾淨的空間（通常在左側或頂部）用於後續文字排版。
+配色：基於「${themeName}」色調，使用大面積白/灰，配合單一高飽和強調色。
+避免：不要有文字，不要有雜亂裝飾，不要有 3D 渲染感，保持平面設計的高級感。`
+    } else {
+      return `請為一個高級雜誌編輯風格（Editorial Magazine Style）的設計生成一張具有氛圍感的背景圖。
+主題是「${spec.title}」。
+背景要求：像《Kinfolk》或《Monocle》雜誌封面，具有人文感、電影質感、或者是細膩的紀實攝影感。
+核心隱喻：「${spec.metaphor}」，畫面元素包括：「${spec.elements}」。
+構圖：具有雜誌感的留白，焦點清晰，適合在上面放置優雅的襯線體文字。
+配色：基於「${themeName}」的紙張感色調，暖白、深墨色或低飽和度自然色。
+避免：不要有文字，不要做成合成圖，不要高飽和度，不要有 UI 元素。`
+    }
+  }
+
   if (styleId === 'editorial_object_annotation_card') {
     return `請生成一張具象標注風的中文文章封面圖。
 主題是「${spec.title}」。畫面使用暖白或淺米色紙感背景，整體像高質感方法論卡片、設計思維筆記或知識型品牌海報。
@@ -195,10 +218,29 @@ export function renderBody(spec: BodySpec): string {
   const styleId = spec.style_id || 'handdrawn_knowledge_card'
   const anchor = STYLE_ANCHORS[styleId] || STYLE_ANCHORS['handdrawn_knowledge_card']
 
+  if (styleId.startsWith('gz_')) {
+    const isSwiss = styleId.includes('_swiss_')
+    const themeName = styleId.split('_').pop()?.replace(/-/g, ' ')
+    
+    if (isSwiss) {
+      return `請為一個瑞士國際主義風格的數據圖表（Swiss Data Layout）生成一張乾淨的背景圖。
+這張圖將與「${spec.structure}」結構配合。主題是「${spec.title}」。
+背景要求：極簡、冷靜、具有工程感或實驗室感。可以使用極細的網格線、點狀底紋、或者是柔和的單色背景。
+配色：基於「${themeName}」色調，保持高度的專業感與清晰度。
+避免：不要有文字，不要有雜亂插畫，不要有重陰影。`
+    } else {
+      return `請為一個高級雜誌排版（Editorial Layout）生成一張背景資產。
+這張圖將用於「${spec.title}」主題的內容呈現。
+背景要求：具有紙張質感、細膩紋理、或者是溫柔的自然光影效果。背景應該像是一本精美雜誌的內頁，適合承載文字與圖解。
+配色：基於「${themeName}」的優雅色調，米白、淺灰或溫潤的紙感色。
+避免：不要有文字，不要有高飽和色塊，不要有 UI 元素。`
+    }
+  }
+
   if (styleId === 'editorial_object_annotation_card') {
     return `請生成一張具象標注風的中文文章正文配圖。
 這張圖用於表達文章中的這句話：「${spec.title}」。
-畫面使用暖白或淺米紙感背景，中心是一個單一主體或清楚的物件，核心隱喻是「${spec.metaphor}」。
+畫面使用暖白或淺米紙感背景，中心是一個單一主體或清楚的物件，核心主題是「${spec.title}」。
 畫面周圍加入編號、箭頭、標籤、框線與短註釋，將正文中的重點拆成 3 到 5 個清楚區塊，核心內容包括：「${spec.modules.join('、')}」。
 必要註釋：「${spec.notes.join('、')}」。整體像方法論卡片、產品拆解圖或研究筆記，信息感要強但畫面要乾淨。
 底部可以放一句很輕的結論：「${spec.bottomSentence}」。
@@ -208,7 +250,7 @@ ${anchor}`
   if (styleId === 'crowd_typography_scene') {
     return `請生成一張人群造字風的中文文章正文配圖。
 這張圖用於表達文章中的這句話：「${spec.title}」。
-畫面像社會議題報導中的正文配圖，由許多微小人物或剪影組成一個大型字標、符號、圖形或路徑。核心主題是「${spec.metaphor}」。
+畫面像社會議題報導中的正文配圖，由許多微小人物或剪影組成一個大型字標、符號、圖形或路徑。核心主題是「${spec.title}」。
 核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
 人物要有秩序與方向感，不要變成亂七八糟的卡通群像。整體保持克制、清楚、帶敘事性。
 底部可以放一句很輕的結論：「${spec.bottomSentence}」。
@@ -219,7 +261,7 @@ ${anchor}`
     return `請生成一張語義字體風的中文文章正文配圖。
 這張圖用於表達文章中的這句話：「${spec.title}」。
 畫面以一個或少數幾個關鍵字為主視覺，字體材質直接對應內容語義，例如金屬、木質、石材、玻璃、布料、泡沫、紙張或發光材質。
-核心隱喻是「${spec.metaphor}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+核心主題是「${spec.title}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
 背景極簡，留白充足，讓文字既是內容也是圖像。底部可以放一句很輕的結論：「${spec.bottomSentence}」。
 ${anchor}`
   }
@@ -228,7 +270,7 @@ ${anchor}`
     return `請生成一張怪誕小人風的中文文章正文配圖。
 這張圖用於表達文章中的這句話：「${spec.title}」。
 畫面像把複雜工作流、工具鏈或流程拆解成一張手繪海報。畫面中有簡化小人、工具、箭頭、氣泡、流程框與零散標籤。
-核心隱喻是「${spec.metaphor}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+核心主題是「${spec.title}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
 結構清楚但語氣輕鬆，帶一點古怪與機靈感。底部可以放一句很輕的結論：「${spec.bottomSentence}」。
 ${anchor}`
   }
@@ -237,7 +279,7 @@ ${anchor}`
     return `請生成一張線條藝術風的中文文章正文配圖。
 這張圖用於表達文章中的這句話：「${spec.title}」。
 畫面使用極少筆觸、黑線或深灰線，主體以輪廓、姿態和留白表達，不要填滿畫面。
-核心隱喻是「${spec.metaphor}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
+核心主題是「${spec.title}」，核心內容包括：「${spec.modules.join('、')}」。必要註釋：「${spec.notes.join('、')}」。
 整體安靜、現代、詩意，適合旅行、學習、關係、靈感或情緒主題。底部可以放一句很輕的結論：「${spec.bottomSentence}」。
 ${anchor}`
   }

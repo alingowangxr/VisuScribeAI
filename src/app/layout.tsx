@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Noto_Serif_SC } from 'next/font/google'
 import './globals.css'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Toaster } from '@/components/ui/sonner'
@@ -16,6 +16,12 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const notoSerif = Noto_Serif_SC({
+  variable: '--font-noto-serif',
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+})
+
 export const metadata: Metadata = {
   title: 'VisuScribe AI - 文章視覺化專家',
   description: '把文章轉成一套高品質視覺資產',
@@ -29,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

@@ -121,9 +121,28 @@ export const STYLE_NAMES: Record<string, string> = {
   semantic_material_typography: '語義字體風',
   quirky_doodle_character_flow: '怪誕小人風',
   minimal_line_art: '線條藝術風',
+  // Guizang Editorial
+  gz_editorial_ink_classic: 'Guizang 雜誌｜經典墨黑',
+  gz_editorial_indigo_porcelain: 'Guizang 雜誌｜青花瓷藍',
+  gz_editorial_forest_ink: 'Guizang 雜誌｜深林墨綠',
+  gz_editorial_kraft_paper: 'Guizang 雜誌｜牛皮紙色',
+  gz_editorial_dune: 'Guizang 雜誌｜沙丘米色',
+  gz_editorial_midnight_ink: 'Guizang 雜誌｜深夜墨色',
+  // Guizang Swiss
+  gz_swiss_ikb_blue: 'Guizang 瑞士｜IKB 國際藍',
+  gz_swiss_lemon_yellow: 'Guizang 瑞士｜檸檬黃',
+  gz_swiss_lemon_green: 'Guizang 瑞士｜檸檬綠',
+  gz_swiss_safety_orange: 'Guizang 瑞士｜安全橙',
 }
 
 export const STYLE_GROUPS = [
+  {
+    name: 'Guizang 專業排版類 (Layout)',
+    ids: [
+      'gz_editorial_ink_classic', 'gz_editorial_indigo_porcelain', 'gz_editorial_forest_ink', 'gz_editorial_kraft_paper', 'gz_editorial_dune', 'gz_editorial_midnight_ink',
+      'gz_swiss_ikb_blue', 'gz_swiss_lemon_yellow', 'gz_swiss_lemon_green', 'gz_swiss_safety_orange'
+    ]
+  },
   {
     name: '知識圖解類',
     ids: ['handdrawn_knowledge_card', 'study_note_card', 'pastel_learning_pyramid', 'childlike_cultural_infographic', 'editorial_object_annotation_card']
@@ -210,12 +229,24 @@ export const STYLE_IMAGES: Record<string, string> = {
   semantic_material_typography: '37-semantic-material-typography.jpg',
   quirky_doodle_character_flow: '38-quirky-doodle-character-flow.png',
   minimal_line_art: '39-minimal-line-art.jpg',
+  // Guizang Previews (Placeholder for now, using a representative image)
+  gz_editorial_ink_classic: 'style-selection-preview-24.jpg',
+  gz_editorial_indigo_porcelain: 'style-selection-preview-24.jpg',
+  gz_editorial_forest_ink: 'style-selection-preview-24.jpg',
+  gz_editorial_kraft_paper: 'style-selection-preview-24.jpg',
+  gz_editorial_dune: 'style-selection-preview-24.jpg',
+  gz_editorial_midnight_ink: 'style-selection-preview-24.jpg',
+  gz_swiss_ikb_blue: 'style-selection-preview-24.jpg',
+  gz_swiss_lemon_yellow: 'style-selection-preview-24.jpg',
+  gz_swiss_lemon_green: 'style-selection-preview-24.jpg',
+  gz_swiss_safety_orange: 'style-selection-preview-24.jpg',
 }
 
 export const STYLES: StyleInfo[] = Object.keys(STYLE_NAMES).map((id) => ({
   style_id: id,
   style_name: STYLE_NAMES[id],
-  best_for: [], // Could be populated if needed
+  best_for: [],
+  engine: id.startsWith('gz_') ? 'layout' : 'ai'
 }))
 
 export function getAutoMatchStyle(content: string): string {

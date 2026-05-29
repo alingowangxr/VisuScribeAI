@@ -34,7 +34,7 @@ export default function HomePage() {
             </Link>
             <ThemeToggle />
             <a
-              href="https://github.com"
+              href="https://github.com/alingowangxr/VisuScribeAI"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -149,7 +149,7 @@ export default function HomePage() {
               隱私政策
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/alingowangxr/VisuScribeAI"
               className="text-muted-foreground hover:text-foreground"
             >
               GitHub

@@ -11,6 +11,8 @@ export type BodyStructure =
   | '分層金字塔'
   | '兒童文化科普圖'
 
+export type RenderEngine = 'ai' | 'layout'
+
 export interface CoverSpec {
   title: string
   subtitle: string
@@ -21,6 +23,11 @@ export interface CoverSpec {
   bottomSentence: string
   style_id: string
   generatedUrl?: string
+  layout_config?: {
+    theme?: string
+    recipe?: string
+    short_title?: string
+  }
 }
 
 export interface BodySpec {
@@ -33,6 +40,10 @@ export interface BodySpec {
   bottomSentence: string
   style_id: string
   generatedUrl?: string
+  layout_config?: {
+    theme?: string
+    recipe?: string
+  }
 }
 
 export interface ImagePlan {
@@ -54,4 +65,5 @@ export interface StyleInfo {
   style_id: string
   style_name: string
   best_for: string[]
+  engine?: RenderEngine
 }

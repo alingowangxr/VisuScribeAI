@@ -22,6 +22,7 @@ export const translations = {
     backToHome: '返回首頁',
     copy: '複製內容',
     download: '下載檔案',
+    clearDraft: '清除草稿與重置',
   },
   en: {
     title: 'VisuScribe AI - Article Visualization Expert',
@@ -46,6 +47,7 @@ export const translations = {
     backToHome: 'Back to Home',
     copy: 'Copy Content',
     download: 'Download File',
+    clearDraft: 'Clear Draft & Reset',
   }
 }
 

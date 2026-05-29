@@ -8,6 +8,8 @@ import { FieldEditor } from './field-editor'
 import { AspectRatioBox } from '../aspect-ratio-box'
 import { Button } from '@/components/ui/button'
 import { Sparkles, Loader2, Image as ImageIcon } from 'lucide-react'
+import { M01Cover } from '../guizang/editorial-layouts'
+import { S01AccentCover } from '../guizang/swiss-layouts'
 
 interface CoverCardProps {
   spec: CoverSpec
@@ -30,6 +32,9 @@ export function CoverCard({
     onChange({ ...spec, [field]: value })
   }
 
+  const isGuizang = spec.style_id.startsWith('gz_')
+  const isSwiss = spec.style_id.includes('_swiss_')
+
   return (
     <Card className="border-l-4 border-l-primary relative">
       {(isRegenerating || isGeneratingImage) && (
@@ -41,7 +46,7 @@ export function CoverCard({
         <CardTitle className="text-sm font-bold flex items-center">
           <span>圖 1｜封面圖</span>
           <span className="ml-2 text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded">
-            21:9
+            {isGuizang ? '3:4' : '21:9'}
           </span>
         </CardTitle>
         <div className="flex items-center space-x-2">
@@ -123,13 +128,21 @@ export function CoverCard({
 
             <div className="mt-4">
               <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1 block">
-                {spec.generatedUrl ? '生成結果' : '構圖示意 (21:9)'}
+                {isGuizang ? '排版預覽' : spec.generatedUrl ? '生成結果' : '構圖示意 (21:9)'}
               </Label>
               <AspectRatioBox
-                ratio="21:9"
+                ratio={isGuizang ? "3:4" : "21:9"}
                 className="bg-muted rounded border flex items-center justify-center overflow-hidden"
               >
-                {spec.generatedUrl ? (
+                {isGuizang ? (
+                  <div className="w-full h-full scale-[0.6] origin-top transform-gpu">
+                    {isSwiss ? (
+                      <S01AccentCover spec={spec} />
+                    ) : (
+                      <M01Cover spec={spec} />
+                    )}
+                  </div>
+                ) : spec.generatedUrl ? (
                   <img
                     src={spec.generatedUrl}
                     alt="Generated cover"

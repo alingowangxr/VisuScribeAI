@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, Suspense } from 'react'
+import React, { useState, Suspense, useRef } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -14,10 +14,49 @@ import {
   Check,
   FileJson,
   FileText,
+  Image as ImageIcon,
 } from 'lucide-react'
-import { ImagePlan } from '@/lib/types'
+import { ImagePlan, BodySpec, CoverSpec } from '@/lib/types'
 import { generateMarkdown, generateJson } from '@/lib/export-utils'
 import { toast } from 'sonner'
+import { M01Cover, M04PullQuote, M08TallLedger, M11MarginaliaEssay, M12SectionDivider, M15BeforeAfter } from '@/components/guizang/editorial-layouts'
+import { S01AccentCover, S09KpiTower, S10HBarChart, S11StackedLedger } from '@/components/guizang/swiss-layouts'
+import { toPng } from 'html-to-image'
+
+function GzRenderer({ spec, type, innerRef }: { spec: CoverSpec | BodySpec, type: 'cover' | 'body', innerRef?: React.Ref<HTMLDivElement> }) {
+  const isGuizang = spec.style_id.startsWith('gz_')
+  if (!isGuizang) return null
+
+  const isSwiss = spec.style_id.includes('_swiss_')
+  const struct = 'structure' in spec ? spec.structure : ''
+
+  const content = (() => {
+    if (type === 'cover') {
+      const s = spec as CoverSpec
+      return isSwiss ? <S01AccentCover spec={s} /> : <M01Cover spec={s} />
+    } else {
+      const s = spec as BodySpec
+      if (isSwiss) {
+        if (s.modules.length > 0) {
+          if (struct.includes('塔') || struct.includes('KPI')) return <S09KpiTower spec={s} />
+          if (struct.includes('圖') || struct.includes('表') || struct.includes('排行')) return <S10HBarChart spec={s} />
+          return <S11StackedLedger spec={s} />
+        }
+        return <M04PullQuote spec={s} />
+      } else {
+        if (struct.includes('過渡') || struct.includes('章節')) return <M12SectionDivider spec={s} />
+        if (s.modules.length > 0) {
+          if (struct.includes('對比') || struct.includes('前後')) return <M15BeforeAfter spec={s} />
+          if (s.notes.some(n => n.length > 10) || struct.includes('流程')) return <M08TallLedger spec={s} />
+          return <M11MarginaliaEssay spec={s} />
+        }
+        return <M04PullQuote spec={s} />
+      }
+    }
+  })()
+
+  return <div ref={innerRef} className="bg-background w-full">{content}</div>
+}
 
 function ExportContent() {
   const searchParams = useSearchParams()
@@ -37,6 +76,10 @@ function ExportContent() {
     return urlArticle ? decodeURIComponent(urlArticle) : ''
   })
   const [copied, setCopied] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  
+  const coverRef = useRef<HTMLDivElement>(null)
+  const bodyRefs = useRef<(HTMLDivElement | null)[]>([])
 
   if (!plan) {
     return (
@@ -72,6 +115,29 @@ function ExportContent() {
     toast.success(`檔案 ${filename} 已開始下載`)
   }
 
+  const downloadImage = async (element: HTMLDivElement | null, name: string) => {
+    if (!element) return
+    
+    try {
+      setIsExporting(true)
+      const dataUrl = await toPng(element, {
+        quality: 1,
+        pixelRatio: 2,
+        backgroundColor: '#fff',
+      })
+      const link = document.createElement('a')
+      link.download = `${name}.png`
+      link.href = dataUrl
+      link.click()
+      toast.success(`${name} 下載成功`)
+    } catch (err) {
+      console.error('Export failed', err)
+      toast.error('下載失敗，請嘗試使用列印功能')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <header className="mb-8 flex items-center justify-between">
@@ -88,9 +154,13 @@ function ExportContent() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8">
           <Card className="h-[700px] flex flex-col overflow-hidden border-2">
-            <Tabs defaultValue="markdown" className="flex-1 flex flex-col">
+            <Tabs defaultValue="visual" className="flex-1 flex flex-col">
               <CardHeader className="bg-muted/30 border-b py-3 px-6 flex flex-row items-center justify-between space-y-0">
                 <TabsList>
+                  <TabsTrigger value="visual" className="gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    視覺畫廊
+                  </TabsTrigger>
                   <TabsTrigger value="markdown" className="gap-2">
                     <FileText className="h-4 w-4" />
                     Markdown
@@ -102,6 +172,18 @@ function ExportContent() {
                 </TabsList>
 
                 <div className="flex items-center space-x-2">
+                  <TabsContent value="visual" className="mt-0">
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.print()}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        列印為 PDF
+                      </Button>
+                    </div>
+                  </TabsContent>
                   <TabsContent value="markdown" className="mt-0">
                     <div className="flex space-x-2">
                       <Button
@@ -156,6 +238,59 @@ function ExportContent() {
               </CardHeader>
 
               <div className="flex-1 overflow-hidden relative bg-background">
+                <TabsContent value="visual" className="h-full m-0">
+                  <ScrollArea className="h-full p-8">
+                    <div className="space-y-12 max-w-2xl mx-auto pb-20">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between border-b pb-2">
+                          <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">圖 1｜封面</h3>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 text-[10px] gap-1"
+                            onClick={() => downloadImage(coverRef.current, 'cover')}
+                            disabled={isExporting}
+                          >
+                            <Download className="h-3 w-3" /> 下載 PNG
+                          </Button>
+                        </div>
+                        <div className="shadow-2xl rounded-sm overflow-hidden border border-border/50">
+                          <GzRenderer spec={plan.cover} type="cover" innerRef={coverRef} />
+                        </div>
+                      </div>
+
+                      {plan.bodies.map((body, i) => (
+                        <div key={i} className="space-y-4">
+                          <div className="flex items-center justify-between border-b pb-2">
+                            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">圖 {i+2}｜正文</h3>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-7 text-[10px] gap-1"
+                              onClick={() => downloadImage(bodyRefs.current[i], `body-${i+1}`)}
+                              disabled={isExporting}
+                            >
+                              <Download className="h-3 w-3" /> 下載 PNG
+                            </Button>
+                          </div>
+                          <div className="shadow-2xl rounded-sm overflow-hidden border border-border/50">
+                            <GzRenderer 
+                              spec={body} 
+                              type="body" 
+                              innerRef={(el) => { bodyRefs.current[i] = el }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+
+                      {(!plan.cover.style_id.startsWith('gz_')) && (
+                        <div className="py-20 text-center text-muted-foreground">
+                          <p>當前風格非 Layout 模式，請切換至 Guizang 風格以使用視覺畫廊。</p>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
                 <TabsContent value="markdown" className="h-full m-0">
                   <ScrollArea className="h-full p-8">
                     <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -185,11 +320,10 @@ function ExportContent() {
             <CardContent className="space-y-4">
               <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
                 <h4 className="font-bold text-sm mb-1 text-primary">
-                  1. 手動優化提示詞
+                  1. 下載高品質圖片
                 </h4>
                 <p className="text-xs text-muted-foreground">
-                  將生成的提示詞複製到 Midjourney 或 Stable Diffusion
-                  中進行更多風格實驗。
+                  使用「視覺畫廊」中的下載按鈕，將 2x 分辨率的清晰 PNG 保存到本地。
                 </p>
               </div>
               <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">

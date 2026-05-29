@@ -20,6 +20,7 @@ export function StyleCard({ id, selected, onClick }: StyleCardProps) {
   const name = STYLE_NAMES[id] || id
   const image = STYLE_IMAGES[id]
   const previewUrl = image ? `/assets/examples/${image}` : null
+  const isLayout = id.startsWith('gz_')
 
   return (
     <Tooltip>
@@ -27,11 +28,17 @@ export function StyleCard({ id, selected, onClick }: StyleCardProps) {
         <Card
           className={cn(
             'overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-primary/50 group',
-            selected ? 'ring-2 ring-primary' : 'ring-1 ring-border'
+            selected ? 'ring-2 ring-primary' : 'ring-1 ring-border',
+            isLayout && selected && 'ring-blue-500'
           )}
           onClick={onClick}
         >
-          <CardContent className="p-0">
+          <CardContent className="p-0 relative">
+            {isLayout && (
+              <div className="absolute top-1 right-1 z-10 bg-blue-600 text-white text-[8px] font-black px-1 rounded shadow-sm py-0.5 leading-none">
+                LAYOUT
+              </div>
+            )}
             <div className="aspect-[16/10] bg-muted flex items-center justify-center overflow-hidden relative">
               {previewUrl ? (
                 <img

@@ -7,9 +7,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-serif: var(--font-noto-serif);
+  --font-heading: var(--font-geist-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -127,4 +128,107 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Guizang Design System Tokens */
+:root {
+  /* Default Editorial Paper/Ink */
+  --gz-paper: #f3f0e8;
+  --gz-paper-2: #ebe6da;
+  --gz-ink: #0a0a0b;
+  --gz-muted: #68625a;
+  --gz-line: rgba(10, 10, 11, 0.22);
+  --gz-accent: #111111;
+  --gz-accent-soft: #d8d2c6;
+  --gz-accent-on: #ffffff;
+}
+
+/* Editorial Themes */
+[data-gz-theme="ink-classic"] {
+  --gz-paper: #f3f0e8;
+  --gz-paper-2: #ebe6da;
+  --gz-ink: #0a0a0b;
+  --gz-muted: #68625a;
+  --gz-line: rgba(10, 10, 11, 0.22);
+  --gz-accent: #111111;
+  --gz-accent-soft: #d8d2c6;
+}
+
+[data-gz-theme="indigo-porcelain"] {
+  --gz-paper: #f2f4f5;
+  --gz-paper-2: #e5ebef;
+  --gz-ink: #0a1f3d;
+  --gz-muted: #5f6d78;
+  --gz-line: rgba(10, 31, 61, 0.20);
+  --gz-accent: #315d93;
+  --gz-accent-soft: #d7e1ec;
+}
+
+[data-gz-theme="forest-ink"] {
+  --gz-paper: #f5f1e8;
+  --gz-paper-2: #e8dfcf;
+  --gz-ink: #16251b;
+  --gz-muted: #5d665d;
+  --gz-line: rgba(22, 37, 27, 0.22);
+  --gz-accent: #2e6b4f;
+  --gz-accent-soft: #d4dfd2;
+}
+
+[data-gz-theme="kraft-paper"] {
+  --gz-paper: #eedfc7;
+  --gz-paper-2: #dfc9a8;
+  --gz-ink: #2a1e13;
+  --gz-muted: #755f49;
+  --gz-line: rgba(42, 30, 19, 0.24);
+  --gz-accent: #9b5a2e;
+  --gz-accent-soft: #d5b58f;
+}
+
+[data-gz-theme="dune"] {
+  --gz-paper: #f0e6d2;
+  --gz-paper-2: #ded0b7;
+  --gz-ink: #1f1a14;
+  --gz-muted: #6f6557;
+  --gz-line: rgba(31, 26, 20, 0.22);
+  --gz-accent: #8f7650;
+  --gz-accent-soft: #d4c2a4;
+}
+
+[data-gz-theme="midnight-ink"] {
+  --gz-paper: #0e0d0c;
+  --gz-paper-2: #1a1714;
+  --gz-ink: #ece2cf;
+  --gz-muted: #9a8c75;
+  --gz-line: rgba(236, 226, 207, 0.22);
+  --gz-accent: #d4a04a;
+  --gz-accent-soft: #3a2a14;
+}
+
+/* Swiss Accents */
+[data-gz-style="swiss"] {
+  --gz-paper: #fafaf8;
+  --gz-ink: #0a0a0a;
+  --gz-paper-2: #f0f0ee;
+  --gz-muted: #737373;
+  --gz-line: #d4d4d2;
+}
+
+[data-gz-accent="ikb"] {
+  --gz-accent: #002FA7;
+  --gz-accent-on: #ffffff;
+}
+
+[data-gz-accent="lemon-yellow"] {
+  --gz-accent: #FFD500;
+  --gz-accent-on: #0a0a0a;
+}
+
+[data-gz-accent="lemon-green"] {
+  --gz-accent: #C5E803;
+  --gz-accent-on: #0a0a0a;
+}
+
+[data-gz-accent="safety-orange"] {
+  --gz-accent: #FF6B35;
+  --gz-accent-on: #ffffff;
 }

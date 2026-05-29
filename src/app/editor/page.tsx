@@ -24,6 +24,7 @@ import {
   Loader2,
   Save,
   ArrowRightLeft,
+  Trash2,
 } from 'lucide-react'
 import { useBreakdown } from '@/hooks/use-breakdown'
 import { useGenerate } from '@/hooks/use-generate'
@@ -79,7 +80,7 @@ function EditorContent() {
     setPlan
   )
 
-  const { restore: restoreDraft, setInitialized } = usePersistence(
+  const { restore: restoreDraft, clear: clearDraft, setInitialized } = usePersistence(
     'current_project',
     { article, styleId, bodyCount, plan: persistedPlan, provider },
     (saved) => {
@@ -99,7 +100,17 @@ function EditorContent() {
       searchParams.has('article') || searchParams.has('plan_json')
     if (!hasParams) {
       const restored = restoreDraft()
-      if (restored) toast.info('已從本地存檔恢復草稿')
+      if (restored) {
+        const saved = localStorage.getItem('visuscribe_current_project')
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved)
+            if (parsed.article || parsed.plan) {
+              toast.info('已從本地存檔恢復草稿')
+            }
+          } catch {}
+        }
+      }
     } else {
       setInitialized(true)
     }
@@ -277,6 +288,16 @@ function EditorContent() {
     setPlan({ ...plan, bodies: newBodies })
   }
 
+  const handleClearDraft = () => {
+    clearDraft()
+    setArticle('')
+    setStyleId('handdrawn_knowledge_card')
+    setBodyCount(3)
+    setGlobalAnchor(STYLE_ANCHORS['handdrawn_knowledge_card'])
+    setPlan(null)
+    toast.success('已清除草稿並重置編輯器')
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300 relative">
       {isCompareOpen && plan && (
@@ -366,23 +387,35 @@ function EditorContent() {
           <Separator />
           <GlobalVisualConfig value={globalAnchor} onChange={setGlobalAnchor} />
 
-          <Button
-            className="w-full py-6 text-lg font-bold"
-            onClick={handleStartBreakdown}
-            disabled={breakdownLoading || !article.trim()}
-          >
-            {breakdownLoading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                {t('aiBreakdownLoading')}
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-5 w-5" />
-                {t('aiBreakdown')}
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              className="w-full py-6 text-lg font-bold"
+              onClick={handleStartBreakdown}
+              disabled={breakdownLoading || !article.trim()}
+            >
+              {breakdownLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {t('aiBreakdownLoading')}
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  {t('aiBreakdown')}
+                </>
+              )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-xs text-muted-foreground hover:text-destructive flex items-center justify-center gap-1.5 h-8"
+              onClick={handleClearDraft}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {t('clearDraft')}
+            </Button>
+          </div>
 
           <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
             <Save className="h-3 w-3" />

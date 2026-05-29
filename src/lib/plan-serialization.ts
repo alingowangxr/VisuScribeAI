@@ -1,7 +1,7 @@
 import { BodySpec, CoverSpec, ImagePlan } from './types'
 
 function shouldPersistGeneratedUrl(url: string | undefined): url is string {
-  return Boolean(url && !url.startsWith('data:'))
+  return Boolean(url && !url.startsWith('data:') && !url.startsWith('blob:'))
 }
 
 function stripLargeGeneratedUrl<T extends CoverSpec | BodySpec>(spec: T): T {

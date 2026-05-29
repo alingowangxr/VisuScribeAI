@@ -15,6 +15,8 @@ import {
   Loader2,
   Image as ImageIcon,
 } from 'lucide-react'
+import { M04PullQuote, M08TallLedger, M11MarginaliaEssay, M12SectionDivider, M15BeforeAfter } from '../guizang/editorial-layouts'
+import { S09KpiTower, S10HBarChart, S11StackedLedger } from '../guizang/swiss-layouts'
 
 interface BodyCardProps {
   index: number
@@ -37,15 +39,40 @@ export function BodyCard({
   onMoveUp,
   onMoveDown,
   onRegenerate,
-  isRegenerating,
+  isRegenerating = false,
   onGenerateImage,
-  isGeneratingImage,
+  isGeneratingImage = false,
 }: BodyCardProps) {
-  const updateField = <K extends keyof BodySpec>(
-    field: K,
-    value: BodySpec[K]
-  ) => {
+  const updateField = <K extends keyof BodySpec>(field: K, value: BodySpec[K]) => {
     onChange({ ...spec, [field]: value })
+  }
+  const isGuizang = spec.style_id.startsWith('gz_')
+  const isSwiss = spec.style_id.includes('_swiss_')
+
+  // Intelligent Layout Dispatcher
+  const renderGzPreview = () => {
+    const struct = spec.structure
+    
+    if (isSwiss) {
+      if (spec.modules.length > 0) {
+        if (struct.includes('塔') || struct.includes('KPI')) return <S09KpiTower spec={spec} />
+        if (struct.includes('圖') || struct.includes('表') || struct.includes('排行')) return <S10HBarChart spec={spec} />
+        return <S11StackedLedger spec={spec} />
+      }
+      return <M04PullQuote spec={spec} />
+    } else {
+      if (struct.includes('過渡') || struct.includes('章節')) return <M12SectionDivider spec={spec} />
+      
+      const hasModules = spec.modules.length > 0
+      const hasDetailedNotes = spec.notes.some(n => n.length > 10)
+      
+      if (hasModules) {
+        if (struct.includes('對比') || struct.includes('前後')) return <M15BeforeAfter spec={spec} />
+        if (hasDetailedNotes || struct.includes('流程')) return <M08TallLedger spec={spec} />
+        return <M11MarginaliaEssay spec={spec} />
+      }
+      return <M04PullQuote spec={spec} />
+    }
   }
 
   return (
@@ -61,7 +88,7 @@ export function BodyCard({
             圖 {index + 2}｜正文配圖
           </CardTitle>
           <span className="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded">
-            16:9
+            {isGuizang ? '3:4' : '16:9'}
           </span>
           <div className="flex items-center space-x-1 ml-4">
             {onGenerateImage && (
@@ -73,7 +100,7 @@ export function BodyCard({
                 disabled={isGeneratingImage || isRegenerating}
               >
                 <ImageIcon className="mr-1 h-2.5 w-2.5" />
-                生成真實圖片
+                生成背景素材
               </Button>
             )}
             {onRegenerate && (
@@ -175,13 +202,17 @@ export function BodyCard({
 
             <div className="mt-4">
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">
-                {spec.generatedUrl ? '生成結果' : '結構示意 (16:9)'}
+                {isGuizang ? '佈局預覽' : spec.generatedUrl ? '生成結果' : '結構示意 (16:9)'}
               </div>
               <AspectRatioBox
-                ratio="16:9"
-                className="bg-muted rounded border flex flex-col overflow-hidden"
+                ratio={isGuizang ? "3:4" : "16:9"}
+                className="bg-muted rounded border flex flex-col overflow-hidden items-center justify-center"
               >
-                {spec.generatedUrl ? (
+                {isGuizang ? (
+                  <div className="w-full h-full scale-[0.6] origin-top transform-gpu">
+                    {renderGzPreview()}
+                  </div>
+                ) : spec.generatedUrl ? (
                   <img
                     src={spec.generatedUrl}
                     alt="Generated body"
