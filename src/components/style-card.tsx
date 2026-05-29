@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Tooltip,
@@ -39,12 +40,13 @@ export function StyleCard({ id, selected, onClick }: StyleCardProps) {
                 LAYOUT
               </div>
             )}
-            <div className="aspect-[16/10] bg-muted flex items-center justify-center overflow-hidden relative">
+            <div className="aspect-[16/10] bg-muted flex items-center justify-center overflow-hidden relative w-full">
               {previewUrl ? (
-                <img
+                <Image
                   src={previewUrl}
                   alt={name}
-                  loading="lazy"
+                  fill
+                  unoptimized
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
               ) : (

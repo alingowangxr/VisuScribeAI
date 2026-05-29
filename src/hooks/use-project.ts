@@ -41,7 +41,13 @@ export function useProject(
   // Sync to URL
   const syncToUrl = useCallback(() => {
     const params = new URLSearchParams()
-    if (article) params.set('article', encodeURIComponent(article))
+    
+    // Truncate extremely long articles for URL serialization to prevent HTTP 414 URI Too Long
+    const shareableArticle = article && article.length > 800
+      ? article.substring(0, 800) + '...'
+      : article
+
+    if (shareableArticle) params.set('article', encodeURIComponent(shareableArticle))
     if (styleId) params.set('style', styleId)
     if (bodyCount) params.set('count', bodyCount.toString())
     const shareablePlan = stripLargeGeneratedImages(plan)
@@ -50,8 +56,20 @@ export function useProject(
     }
 
     const queryString = params.toString()
-    if (queryString) {
+    if (queryString && queryString.length < 5000) {
       window.history.replaceState(null, '', `?${queryString}`)
+    } else if (queryString) {
+      // If still too large, omit the article text from URL sync to preserve the JSON plan structural data
+      const backupParams = new URLSearchParams()
+      if (styleId) backupParams.set('style', styleId)
+      if (bodyCount) backupParams.set('count', bodyCount.toString())
+      if (shareablePlan) {
+        backupParams.set('plan_json', encodeURIComponent(JSON.stringify(shareablePlan)))
+      }
+      const backupQuery = backupParams.toString()
+      if (backupQuery && backupQuery.length < 5000) {
+        window.history.replaceState(null, '', `?${backupQuery}`)
+      }
     }
   }, [article, styleId, bodyCount, plan])
 

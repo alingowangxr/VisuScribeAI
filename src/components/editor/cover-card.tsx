@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { CoverSpec } from '@/lib/types'
@@ -143,10 +144,11 @@ export function CoverCard({
                     )}
                   </div>
                 ) : spec.generatedUrl ? (
-                  <img
+                  <Image
                     src={spec.generatedUrl}
                     alt="Generated cover"
-                    loading="lazy"
+                    fill
+                    unoptimized
                     className="w-full h-full object-cover"
                   />
                 ) : (

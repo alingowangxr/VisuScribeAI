@@ -1,6 +1,64 @@
 import { useState } from 'react'
 import { BodySpec, CoverSpec, ImagePlan } from '@/lib/types'
 
+function tryParsePartialJson(text: string): any {
+  if (!text.trim()) return null
+  
+  try {
+    return JSON.parse(text)
+  } catch {}
+  
+  let repaired = text.trim()
+  const stack: ('}' | ']')[] = []
+  let inString = false
+  let escaped = false
+  
+  for (let i = 0; i < repaired.length; i++) {
+    const char = repaired[i]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (char === '"') {
+      inString = !inString
+      continue
+    }
+    if (inString) continue
+    
+    if (char === '{') {
+      stack.push('}')
+    } else if (char === '[') {
+      stack.push(']')
+    } else if (char === '}') {
+      if (stack[stack.length - 1] === '}') {
+        stack.pop()
+      }
+    } else if (char === ']') {
+      if (stack[stack.length - 1] === ']') {
+        stack.pop()
+      }
+    }
+  }
+  
+  if (inString) {
+    repaired += '"'
+  }
+  
+  for (let i = stack.length - 1; i >= 0; i--) {
+    repaired += stack[i]
+  }
+  
+  try {
+    return JSON.parse(repaired)
+  } catch {
+    return null
+  }
+}
+
 export function useBreakdown() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -8,7 +66,8 @@ export function useBreakdown() {
   const breakdown = async (
     article: string,
     styleId: string,
-    count: number
+    count: number,
+    onProgress?: (plan: ImagePlan) => void
   ): Promise<ImagePlan | null> => {
     setLoading(true)
     setError(null)
@@ -26,12 +85,6 @@ export function useBreakdown() {
         throw new Error(text || 'Failed to breakdown article')
       }
 
-      // Vercel AI SDK streamObject returns a stream of JSON patches or full objects
-      // For simplicity in the first pass, we'll collect the full result
-      // But we can implement partial updates if needed using server actions
-      // or manual stream parsing.
-
-      // Let's use a simpler way for now: collect the stream as text and parse as JSON
       const reader = response.body?.getReader()
       if (!reader) throw new Error('No reader')
 
@@ -41,7 +94,13 @@ export function useBreakdown() {
         const { done, value } = await reader.read()
         if (done) break
         result += decoder.decode(value, { stream: true })
-        // If we want real-time UI updates, we'd parse partial JSON here
+        
+        if (onProgress) {
+          const partial = tryParsePartialJson(result)
+          if (partial && (partial.cover || (partial.bodies && partial.bodies.length > 0))) {
+            onProgress(partial as ImagePlan)
+          }
+        }
       }
 
       return JSON.parse(result) as ImagePlan

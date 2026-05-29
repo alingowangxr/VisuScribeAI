@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { STYLE_NAMES, STYLE_IMAGES } from '@/lib/styles'
@@ -134,11 +135,13 @@ function CompareCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-3">
-        <div className="aspect-video bg-muted rounded overflow-hidden">
+        <div className="aspect-video bg-muted rounded overflow-hidden relative">
           {image ? (
-            <img
+            <Image
               src={`/assets/examples/${image}`}
               alt="preview"
+              fill
+              unoptimized
               className="w-full h-full object-cover opacity-50 grayscale"
             />
           ) : (

@@ -232,3 +232,59 @@
   --gz-accent: #FF6B35;
   --gz-accent-on: #ffffff;
 }
+
+/* Print Media Stylesheet */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  header,
+  footer,
+  aside,
+  nav,
+  button,
+  .no-print,
+  [role="tablist"],
+  .border-b,
+  .shadow-2xl,
+  .lg\:col-span-4 {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .grid {
+    display: block !important;
+  }
+
+  .lg\:col-span-8 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .space-y-12 > div {
+    page-break-after: always !important;
+    break-after: page !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

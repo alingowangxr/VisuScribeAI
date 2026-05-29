@@ -69,9 +69,11 @@ export default function HomePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-lg">
-                查看範例
-              </Button>
+              <Link href="/gallery">
+                <Button size="lg" variant="outline" className="h-14 px-8 text-lg">
+                  查看範例
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

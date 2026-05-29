@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BodySpec, BodyStructure } from '@/lib/types'
 import { FieldEditor } from './field-editor'
@@ -213,10 +214,11 @@ export function BodyCard({
                     {renderGzPreview()}
                   </div>
                 ) : spec.generatedUrl ? (
-                  <img
+                  <Image
                     src={spec.generatedUrl}
                     alt="Generated body"
-                    loading="lazy"
+                    fill
+                    unoptimized
                     className="w-full h-full object-cover"
                   />
                 ) : (

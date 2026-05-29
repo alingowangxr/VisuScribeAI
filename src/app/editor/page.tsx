@@ -126,7 +126,9 @@ function EditorContent() {
       return
     }
 
-    const newPlan = await breakdown(article, styleId, bodyCount)
+    const newPlan = await breakdown(article, styleId, bodyCount, (partialPlan) => {
+      setPlan(partialPlan)
+    })
     if (newPlan) {
       setPlan(newPlan)
       toast.success('AI 拆解完成！')

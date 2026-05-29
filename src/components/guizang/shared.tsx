@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 export function Kicker({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -91,7 +92,7 @@ export function GzImage({
       className
     )}>
       {src ? (
-        <img src={src} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
+        <Image src={src} alt={alt || "Image preview"} fill unoptimized className="absolute inset-0 w-full h-full object-cover" />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-[10px] text-gz-muted/50 uppercase tracking-widest font-mono">Image Evidence</span>
