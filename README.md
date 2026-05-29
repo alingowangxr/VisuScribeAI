@@ -1,8 +1,12 @@
+![](ChatGPT%20Image%202026%E5%B9%B45%E6%9C%8829%E6%97%A5%20%E4%B8%8B%E5%8D%8806_59_02.png)
+
 # VisuScribe AI - 讓你的內容「一眼被看懂」
 
 VisuScribe AI 是一個將長篇文章、選題或知識點，自動拆解為一套精美且風格統一的視覺資產（封面圖 + 正文圖）的 AI 生產力工具。
 
 ## ✨ 核心特性
+
+![](<ChatGPT Image 2026年5月29日 下午07_01_12.png>)
 
 - **🚀 雙引擎渲染架構**：
   - **AI Engine (GPT-Image-2)**：生成富有想像力的手繪、材質與藝術氛圍圖。
@@ -51,7 +55,7 @@ npm install
 npm run dev
 ```
 
-啟動後，請造訪 [http://localhost:3000](http://localhost:3000) 即可開始使用。
+啟動後，請造訪 <http://localhost:3000> 即可開始使用。
 
 ### 4. 驗證
 
@@ -62,11 +66,11 @@ npm run build
 
 ## 🖼️ 生圖引擎
 
-| Provider        | 模型                         | 用途                  | 需要環境變數     |
-| --------------- | ---------------------------- | --------------------- | ---------------- |
-| GPT Image 2     | `gpt-image-2`                | 預設生圖引擎          | `OPENAI_API_KEY` |
-| Nano Banana Pro | `gemini-3-pro-image-preview` | Google 備用生圖引擎   | `GEMINI_API_KEY` |
-| Mock Mode       | Placeholder                  | 無 key 或本地 UI 測試 | 無               |
+| Provider | 模型 | 用途 | 需要環境變數 |
+| --- | --- | --- | --- |
+| GPT Image 2 | `gpt-image-2` | 預設生圖引擎 | `OPENAI_API_KEY` |
+| Nano Banana Pro | `gemini-3-pro-image-preview` | Google 備用生圖引擎 | `GEMINI_API_KEY` |
+| Mock Mode | Placeholder | 無 key 或本地 UI 測試 | 無 |
 
 目前不會在 GPT Image 2 失敗時自動切到 Nano Banana Pro；使用者需要在編輯器右上角手動選擇引擎，避免跨供應商產生不可預期成本。
 
@@ -106,9 +110,10 @@ npm run build
 
 本專案在開發與設計過程中，深刻借鑑與吸收了以下優秀開源專案的核心思想與美術排版精髓，特此致敬：
 
-1. **[cc2image](https://github.com/izscc/cc2image)**：本專案在 UI 編輯器工作流、多卡片正文配圖規劃思路上，吸收了 `cc2image` 創新的產品工作流哲學，為使用者提供連貫且高效率的視覺資產生成體驗。
-2. **[guizang-social-card-skill](https://github.com/op7418/guizang-social-card-skill)**：本專案所採用極富人文氣息的「歸藏排版配方與佈局架構」（包括雜誌 Editorial 與瑞士 Swiss 風格），在 CSS 網格設計、字體排版佈局與美術設計規範上，深度借鑑了該專案的精緻視覺體系與設計規則。
+1. [**cc2image**](https://github.com/izscc/cc2image)：本專案在 UI 編輯器工作流、多卡片正文配圖規劃思路上，吸收了 `cc2image` 創新的產品工作流哲學，為使用者提供連貫且高效率的視覺資產生成體驗。
+2. [**guizang-social-card-skill**](https://github.com/op7418/guizang-social-card-skill)：本專案所採用極富人文氣息的「歸藏排版配方與佈局架構」（包括雜誌 Editorial 與瑞士 Swiss 風格），在 CSS 網格設計、字體排版佈局與美術設計規範上，深度借鑑了該專案的精緻視覺體系與設計規則。
 
 ---
 
 © 2026 VisuScribe AI Project. 讓你的內容「一眼被看懂」。
+
