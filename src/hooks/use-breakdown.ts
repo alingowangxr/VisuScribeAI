@@ -1,18 +1,63 @@
 import { useState } from 'react'
 import { BodySpec, CoverSpec, ImagePlan } from '@/lib/types'
 
-function tryParsePartialJson(text: string): any {
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === 'string')
+}
+
+function isCoverSpec(value: unknown): value is CoverSpec {
+  if (!value || typeof value !== 'object') return false
+
+  const cover = value as CoverSpec
+  return [
+    cover.title,
+    cover.subtitle,
+    cover.metaphor,
+    cover.elements,
+    cover.character_action,
+    cover.speech_bubble,
+    cover.bottomSentence,
+    cover.style_id,
+  ].every((field) => typeof field === 'string')
+}
+
+function isBodySpec(value: unknown): value is BodySpec {
+  if (!value || typeof value !== 'object') return false
+
+  const body = value as BodySpec
+  return (
+    [
+      body.title,
+      body.structure,
+      body.character_action,
+      body.speech_bubble,
+      body.bottomSentence,
+      body.style_id,
+    ].every((field) => typeof field === 'string') &&
+    isStringArray(body.modules) &&
+    isStringArray(body.notes)
+  )
+}
+
+function isImagePlan(value: unknown): value is ImagePlan {
+  if (!value || typeof value !== 'object') return false
+
+  const plan = value as ImagePlan
+  return isCoverSpec(plan.cover) && Array.isArray(plan.bodies) && plan.bodies.every(isBodySpec)
+}
+
+function tryParsePartialJson(text: string): unknown {
   if (!text.trim()) return null
-  
+
   try {
     return JSON.parse(text)
   } catch {}
-  
+
   let repaired = text.trim()
   const stack: ('}' | ']')[] = []
   let inString = false
   let escaped = false
-  
+
   for (let i = 0; i < repaired.length; i++) {
     const char = repaired[i]
     if (escaped) {
@@ -43,7 +88,7 @@ function tryParsePartialJson(text: string): any {
       }
     }
   }
-  
+
   if (inString) {
     repaired += '"'
   }
@@ -94,16 +139,21 @@ export function useBreakdown() {
         const { done, value } = await reader.read()
         if (done) break
         result += decoder.decode(value, { stream: true })
-        
+
         if (onProgress) {
           const partial = tryParsePartialJson(result)
-          if (partial && (partial.cover || (partial.bodies && partial.bodies.length > 0))) {
-            onProgress(partial as ImagePlan)
+          if (isImagePlan(partial)) {
+            onProgress(partial)
           }
         }
       }
 
-      return JSON.parse(result) as ImagePlan
+      const parsed = JSON.parse(result) as unknown
+      if (!isImagePlan(parsed)) {
+        throw new Error('Invalid breakdown response')
+      }
+
+      return parsed
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       return null

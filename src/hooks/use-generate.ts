@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function convertBase64ToBlobUrl(dataUrl: string): string {
   if (!dataUrl.startsWith('data:')) return dataUrl
@@ -24,6 +24,14 @@ function convertBase64ToBlobUrl(dataUrl: string): string {
 export function useGenerate() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const objectUrls = useRef<string[]>([])
+
+  useEffect(() => {
+    return () => {
+      objectUrls.current.forEach((url) => URL.revokeObjectURL(url))
+      objectUrls.current = []
+    }
+  }, [])
 
   const generate = async (
     prompt: string,
@@ -48,7 +56,11 @@ export function useGenerate() {
 
       const data = await response.json()
       if (data.url) {
-        return convertBase64ToBlobUrl(data.url)
+        const url = convertBase64ToBlobUrl(data.url)
+        if (url.startsWith('blob:')) {
+          objectUrls.current.push(url)
+        }
+        return url
       }
       return null
     } catch (err: unknown) {

@@ -65,7 +65,7 @@ function ExportContent() {
     if (!urlPlan) return null
 
     try {
-      return JSON.parse(decodeURIComponent(urlPlan)) as ImagePlan
+      return JSON.parse(urlPlan) as ImagePlan
     } catch (e) {
       console.error('Failed to parse plan', e)
       return null
@@ -73,7 +73,7 @@ function ExportContent() {
   })
   const [article] = useState(() => {
     const urlArticle = searchParams.get('article')
-    return urlArticle ? decodeURIComponent(urlArticle) : ''
+    return urlArticle || ''
   })
   const [copied, setCopied] = useState(false)
   const [isExporting, setIsExporting] = useState(false)

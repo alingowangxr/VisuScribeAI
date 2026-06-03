@@ -231,17 +231,27 @@ function EditorContent() {
   const handleGenerateAll = async () => {
     if (!plan) return
     const total = 1 + plan.bodies.length
+    let successCount = 0
+    let failureCount = 0
     setBatchProgress({ current: 0, total })
     toast.info('開始批量生成圖片，請稍候...')
-    await handleGenerateImage('cover')
+    const coverUrl = await handleGenerateImage('cover')
+    if (coverUrl) successCount += 1
+    else failureCount += 1
     setBatchProgress({ current: 1, total })
     for (let i = 0; i < plan.bodies.length; i++) {
-      await handleGenerateImage('body', i)
+      const bodyUrl = await handleGenerateImage('body', i)
+      if (bodyUrl) successCount += 1
+      else failureCount += 1
       setBatchProgress({ current: i + 2, total })
     }
     setBatchProgress(null)
     setGeneratingImageIndex(null)
-    toast.success('所有圖片生成完成！')
+    if (failureCount > 0) {
+      toast.error(`批次完成，但有 ${failureCount} 張失敗，成功 ${successCount}/${total}`)
+    } else {
+      toast.success('所有圖片生成完成！')
+    }
   }
 
   const updateCover = (newCover: CoverSpec) => {
@@ -333,17 +343,21 @@ function EditorContent() {
                 <span className="hidden sm:inline">{t('compareMode')}</span>
               </Button>
             )}
-            <Link
-              href={`/export?${new URLSearchParams({
-                article: encodeURIComponent(article),
-                plan_json: encodeURIComponent(
-                  JSON.stringify(stripLargeGeneratedImages(plan) || {})
-                ),
-              }).toString()}`}
-              className={buttonVariants({ variant: 'outline', size: 'sm' })}
-            >
-              {t('export')}
-            </Link>
+            {plan ? (
+              <Link
+                href={`/export?${new URLSearchParams({
+                  article,
+                  plan_json: JSON.stringify(stripLargeGeneratedImages(plan)),
+                }).toString()}`}
+                className={buttonVariants({ variant: 'outline', size: 'sm' })}
+              >
+                {t('export')}
+              </Link>
+            ) : (
+              <Button variant="outline" size="sm" disabled>
+                {t('export')}
+              </Button>
+            )}
             <Button
               size="sm"
               onClick={handleGenerateAll}

@@ -2,6 +2,20 @@ import { openai } from '@ai-sdk/openai'
 import { streamObject } from 'ai'
 import { z } from 'zod'
 
+const BodyStructureSchema = z.enum([
+  '閉環機制圖',
+  '橫向流程圖',
+  '分類樹圖',
+  '左右對比圖',
+  '結構類比圖',
+  '風險路徑圖',
+  '光譜選擇圖',
+  '隨附場景圖',
+  '學習筆記卡片',
+  '分層金字塔',
+  '兒童文化科普圖',
+])
+
 // Define the schema for the image plan based on our types
 const ImagePlanSchema = z.object({
   cover: z.object({
@@ -17,19 +31,7 @@ const ImagePlanSchema = z.object({
   bodies: z.array(
     z.object({
       title: z.string().min(1),
-      structure: z.enum([
-        '閉環機制圖',
-        '橫向流程圖',
-        '分類樹圖',
-        '左右對比圖',
-        '結構類比圖',
-        '風險路徑圖',
-        '光譜選擇圖',
-        '隨附場景圖',
-        '學習筆記卡片',
-        '分層金字塔',
-        '兒童文化科普圖',
-      ]),
+      structure: BodyStructureSchema,
       modules: z.array(z.string().min(1)).min(1),
       notes: z.array(z.string().min(1)).min(1),
       character_action: z.string().min(1),
@@ -42,7 +44,18 @@ const ImagePlanSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { article, style_id, count } = await req.json()
+    const requestSchema = z.object({
+      article: z.string().min(5),
+      style_id: z.string().optional(),
+      count: z.number().int().min(1).max(12).optional(),
+    })
+    const parsedRequest = requestSchema.safeParse(await req.json())
+
+    if (!parsedRequest.success) {
+      return new Response('Invalid request body', { status: 400 })
+    }
+
+    const { article, style_id, count } = parsedRequest.data
 
     if (!article || article.trim().length < 5) {
       return new Response('Article content too short', { status: 400 })

@@ -26,12 +26,17 @@ export function useProject(
     const urlCount = searchParams.get('count')
     const urlPlan = searchParams.get('plan_json')
 
-    if (urlArticle) setArticle(decodeURIComponent(urlArticle))
+    if (urlArticle) setArticle(urlArticle)
     if (urlStyle) setStyleId(urlStyle)
-    if (urlCount) setBodyCount(parseInt(urlCount))
+    if (urlCount) {
+      const parsedCount = parseInt(urlCount, 10)
+      if (Number.isFinite(parsedCount) && parsedCount > 0) {
+        setBodyCount(parsedCount)
+      }
+    }
     if (urlPlan) {
       try {
-        setPlan(JSON.parse(decodeURIComponent(urlPlan)))
+        setPlan(JSON.parse(urlPlan))
       } catch (e) {
         console.error('Failed to parse plan from URL', e)
       }
@@ -47,12 +52,12 @@ export function useProject(
       ? article.substring(0, 800) + '...'
       : article
 
-    if (shareableArticle) params.set('article', encodeURIComponent(shareableArticle))
+    if (shareableArticle) params.set('article', shareableArticle)
     if (styleId) params.set('style', styleId)
     if (bodyCount) params.set('count', bodyCount.toString())
     const shareablePlan = stripLargeGeneratedImages(plan)
     if (shareablePlan) {
-      params.set('plan_json', encodeURIComponent(JSON.stringify(shareablePlan)))
+      params.set('plan_json', JSON.stringify(shareablePlan))
     }
 
     const queryString = params.toString()
@@ -64,7 +69,7 @@ export function useProject(
       if (styleId) backupParams.set('style', styleId)
       if (bodyCount) backupParams.set('count', bodyCount.toString())
       if (shareablePlan) {
-        backupParams.set('plan_json', encodeURIComponent(JSON.stringify(shareablePlan)))
+        backupParams.set('plan_json', JSON.stringify(shareablePlan))
       }
       const backupQuery = backupParams.toString()
       if (backupQuery && backupQuery.length < 5000) {
